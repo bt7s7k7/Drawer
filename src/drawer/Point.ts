@@ -2,6 +2,7 @@ export class Point {
     floor() {
         return new Point(Math.floor(this.x), Math.floor(this.y))
     }
+
     normalize() {
         return this.mul(1 / Math.hypot(this.x, this.y))
     }
@@ -21,8 +22,8 @@ export class Point {
         return new Point(1 / this.x, 1 / this.y)
     }
 
-    public x: number;
-    constructor(x: number | { x: number, y: number } = 0, public y = 0) {
+    public readonly x: number;
+    constructor(x: number | { x: number, y: number } = 0, public readonly y = 0) {
         if (typeof x === "object") {
             this.x = x.x
             this.y = x.y
@@ -48,10 +49,6 @@ export class Point {
             return new Point(this.x + other, this.y + otherY)
     }
 
-    copy() {
-        return new Point(this.x, this.y)
-    }
-
     makeKey() {
         return `${this.x}:${this.y}`
     }
@@ -60,8 +57,16 @@ export class Point {
         return Math.hypot(this.x - other.x, this.y - other.y)
     }
 
-    zero() {
+    isZero() {
         return this.x === 0 && this.y === 0
+    }
+
+    size() {
+        return Math.hypot(this.x, this.y)
+    }
+
+    sizeSqr() {
+        return this.x ** 2 + this.y ** 2
     }
 
     clampSize(maxSize: number) {

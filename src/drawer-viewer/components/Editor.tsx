@@ -1,7 +1,7 @@
 import { Drawer } from '@/drawer/Drawer'
 import { Point } from '@/drawer/Point'
 import { Rect } from '@/drawer/Rect'
-import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api'
+import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api'
 import { fromTextArea } from "codemirror"
 import "codemirror/lib/codemirror.css"
 import "codemirror/mode/javascript/javascript"
@@ -19,6 +19,8 @@ export const Editor = defineComponent({
         const drawer = computed(() => new Drawer(props.canvas.getContext("2d")!))
         const text = ref(localStorage.getItem("drawer-text") ?? "")
         const errors = ref<Error[]>([])
+        const renderScript = ref<Function | null>(null)
+        const mousePos = ref(new Point())
 
         onMounted(() => {
             const editor = fromTextArea(editorTextArea.value, {
@@ -34,6 +36,24 @@ export const Editor = defineComponent({
                 text.value = editor.getValue()
                 localStorage.setItem("drawer-text", text.value)
             })
+
+            const interval = setInterval(() => {
+                if (renderScript.value) {
+                    renderScript.value()
+                }
+            }, 17)
+
+            window.addEventListener("mousemove", event => {
+                var pos = new Point(event.clientX, event.clientY)
+
+                var canvasPos = new Rect(props.canvas.getBoundingClientRect()).pos()
+
+                mousePos.value = pos.add(canvasPos.mul(-1))
+            })
+
+            onUnmounted(() => {
+                clearInterval(interval)
+            })
         })
 
         watch(() => text.value, () => {
@@ -44,23 +64,33 @@ export const Editor = defineComponent({
                 ctx: drawer.value,
                 Drawer,
                 Point,
-                Rect
+                Rect,
+                range: (num: number) => {
+                    const length = Math.floor(num)
+
+                    if (length > 1000) throw new RangeError("Length too long")
+
+                    return Array(length).fill(0).map((_, i) => i)
+                },
+                mousePos
             }
 
             try {
                 var script = new Function(...Object.keys(providedObjects), text.value)
             } catch (err) {
+                renderScript.value = null
                 errors.value.push(err)
             }
-
-            drawer.value.resize()
-
             if (script!) {
-                try {
-                    script!(...Object.values(providedObjects))
-                } catch (err) {
-                    errors.value.push(err)
+                renderScript.value = () => {
+                    errors.value = []
+                    drawer.value.setNativeSize()
 
+                    try {
+                        script!(...Object.values(providedObjects))
+                    } catch (err) {
+                        errors.value.push(err)
+                    }
                 }
             }
         }, { immediate: true })

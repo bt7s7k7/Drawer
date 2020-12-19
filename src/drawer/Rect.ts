@@ -17,10 +17,10 @@ export class Rect {
         return new Rect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.width), Math.floor(this.height))
     }
 
-    public x: number;
-    public y: number
+    public readonly x: number;
+    public readonly y: number
 
-    constructor(x: number | { x: number, y: number } | { x: number, y: number, width: number, height: number } = 0, y: number | { x: number, y: number } = 0, public width = 0, public height = 0) {
+    constructor(x: number | { x: number, y: number } | { x: number, y: number, width: number, height: number } = 0, y: number | { x: number, y: number } = 0, public readonly width = 0, public readonly height = 0) {
         if (typeof x === "object") {
             this.x = x.x
             this.y = x.y
@@ -50,6 +50,7 @@ export class Rect {
         return [this.x, this.y, this.width, this.height]
     }
 
+    /** Returns a new rect with the same size, but starting at the origin */
     origin() {
         return new Rect(0, 0, this.width, this.height)
     }
@@ -58,6 +59,7 @@ export class Rect {
         return new Rect(this.x, this.y, this.width * amount, this.height * amount)
     }
 
+    /** Gets the ending point */
     end() {
         return new Point(this.x + this.width, this.y + this.height)
     }
@@ -82,7 +84,7 @@ export class Rect {
         return new Rect(this.x, this.y, this.width, this.height)
     }
 
-    isPointInside(point: Point) {
+    containsPoint(point: Point) {
         return point.x >= this.x && point.x <= this.x + this.width && point.y >= this.y && point.y <= this.y + this.height
     }
 
@@ -90,7 +92,8 @@ export class Rect {
         return this.pos().add(this.size().mul(0.5))
     }
 
-    contains(other: Rect) {
+    /** Test if other rect is inside this rect */
+    containsRect(other: Rect) {
         let thisEnd = this.end()
         let otherEnd = other.end()
 
