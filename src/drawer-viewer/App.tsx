@@ -6,6 +6,7 @@ const rootClass = css({
     ".editor-pane": {
         width: "50%",
         transition: "width 0.1s linear",
+        contain: "strict"
     },
     ".canvas-pane": {
         position: "relative",
