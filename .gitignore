@@ -24,3 +24,7 @@ pnpm-debug.log*
 
 # UCPEM
 ucpem_ports
+
+# Firebase
+/.firebase
+/firebase-debug.log

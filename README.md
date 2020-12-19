@@ -1,19 +1,2 @@
-# drawer
-
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# Draw
+Simple JS canvas drawing and vector math library. [Here's a demo](https://drawer-lib-demo.web.app)
