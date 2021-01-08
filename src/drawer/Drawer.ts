@@ -60,6 +60,14 @@ export class Drawer {
         this.size = size instanceof Point ? new Rect(new Point(), size) : size.origin()
         canvas.width = this.size.width
         canvas.height = this.size.height
+
+        return this
+    }
+
+    matchSize(other: Drawer) {
+        if (!this.size.equals(other.size)) {
+            this.setSize(other.size)
+        }
     }
 
     beginPath() {

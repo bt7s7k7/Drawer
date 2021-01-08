@@ -5,7 +5,7 @@ import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from '@
 import { fromTextArea } from "codemirror"
 import "codemirror/lib/codemirror.css"
 import "codemirror/mode/javascript/javascript"
-import { demos } from '../demos'
+import { demos } from '../../../demos'
 
 export const Editor = defineComponent({
     name: "Editor",
@@ -138,6 +138,9 @@ export const Editor = defineComponent({
                                 </b-btn>
                             ))}
                         </b-modal>
+                    </b-btn>
+                    <b-btn size="sm" squared to="/input" class="border-left">
+                        Show input demo
                     </b-btn>
                 </div>
                 <div class={["border-top"]} style={{ "flex-basis": "200px", "max-height": "200px", "overflow-y": "scroll" }}>

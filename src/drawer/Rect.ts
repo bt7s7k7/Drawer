@@ -99,4 +99,8 @@ export class Rect {
 
         return otherEnd.x >= this.x && otherEnd.y >= this.y && other.x <= thisEnd.x && other.y <= thisEnd.y
     }
+
+    equals(other: Rect) {
+        return this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height
+    }
 }
