@@ -1,10 +1,10 @@
-import { Drawer } from '@/drawer/Drawer'
-import { Point } from '@/drawer/Point'
-import { Rect } from '@/drawer/Rect'
 import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api'
 import { fromTextArea } from "codemirror"
 import "codemirror/lib/codemirror.css"
 import "codemirror/mode/javascript/javascript"
+import { Drawer } from '../../../../drawer/Drawer'
+import { Point } from '../../../../drawer/Point'
+import { Rect } from '../../../../drawer/Rect'
 import { demos } from '../../../demos'
 
 export const Editor = defineComponent({

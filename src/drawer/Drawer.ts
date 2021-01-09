@@ -17,8 +17,13 @@ export class Drawer {
         return this
     }
 
-    fillRect(rect: Rect) {
+    fillRect(rect: Rect = this.size) {
         this.ctx.fillRect(...rect.spread())
+        return this
+    }
+
+    clear() {
+        this.setSize(this.size)
         return this
     }
 
@@ -139,6 +144,28 @@ export class Drawer {
 
     setStrokeWidth(width: number) {
         this.ctx.lineWidth = width
+        return this
+    }
+
+    blit(image: CanvasImageSource | Drawer): Drawer
+    blit(image: CanvasImageSource | Drawer, dest: Point): Drawer
+    blit(image: CanvasImageSource | Drawer, dest: Rect): Drawer
+    blit(image: CanvasImageSource | Drawer, dest: Rect, source: Rect): Drawer
+    blit(image: CanvasImageSource | Drawer, dest: Rect | Point | null = null, source: Rect | null = null) {
+        const realImage = image instanceof Drawer ? image.ctx.canvas : image
+
+        if (!dest) {
+            this.ctx.drawImage(realImage, 0, 0)
+        } else if (dest instanceof Point) {
+            this.ctx.drawImage(realImage, ...dest.spread())
+        } else {
+            if (!source) {
+                this.ctx.drawImage(realImage, ...dest.spread())
+            } else {
+                this.ctx.drawImage(realImage, ...source.spread(), ...dest.spread())
+            }
+        }
+
         return this
     }
 }

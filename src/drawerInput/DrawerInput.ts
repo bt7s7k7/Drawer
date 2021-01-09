@@ -1,13 +1,13 @@
-import { Drawer } from "@/drawer/Drawer";
-import { Point } from "@/drawer/Point";
-import { Disposable } from "@/eventLib/Disposable";
-import { EventEmitter } from "@/eventLib/EventEmitter";
+import { Drawer } from "../drawer/Drawer";
+import { Point } from "../drawer/Point";
+import { Disposable } from "../eventLib/Disposable";
+import { EventEmitter } from "../eventLib/EventEmitter";
 
 export class DrawerInput extends Disposable {
     public readonly mouse = new DrawerInput.Mouse()
     /** Triggers every frame */
     public readonly onDraw = new EventEmitter<{ deltaTime: number }>()
-    /** The drawer in use this frame */
+    /** The drawer currently being used, only guaranteed to work in event handlers */
     public drawer!: Drawer
     /** Current time in milliseconds */
     public time = -1
@@ -15,6 +15,7 @@ export class DrawerInput extends Disposable {
     public deltaTime = 0
 
     public processMouseInput(drawer: Drawer, type: "up" | "down" | "move", event: MouseEvent) {
+        this.drawer = drawer
         const pos = new Point(event.offsetX, event.offsetY)
 
         const lastPos = this.mouse.pos
@@ -38,16 +39,23 @@ export class DrawerInput extends Disposable {
             }
 
             if (type != "move" && button.buttonIndex == event.button) {
-                if (type == "down") button.onDown.emit({ pos, drawer })
+                if (type == "down") {
+                    button.onDown.emit({ pos, drawer })
+                    button.down = true
+                    button.downPos = pos
+                }
                 if (type == "up") {
                     button.onUp.emit({ pos, drawer })
                     if (button.dragging) button.onDragEnd.emit({ pos, drawer })
+                    button.down = false
+                    button.dragging = false
                 }
             }
         }
     }
 
     public processDrawEvent(drawer: Drawer, deltaTime: number | null = null) {
+        this.drawer = drawer
         if (this.time == -1 && deltaTime == null) {
             this.time = Date.now()
         }
@@ -70,9 +78,8 @@ export class DrawerInput extends Disposable {
 
         for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right]) {
             button.lastDown = button.down
+            button.lastDragging = button.dragging
         }
-
-        if (deltaTime == null) this.time = Date.now()
     }
 
     constructor(
@@ -103,6 +110,7 @@ export namespace DrawerInput {
         public lastDown = false
         public downPos = new Point()
         public dragging = false
+        public lastDragging = false
         /** Triggers when this button is pressed */
         public readonly onDown = new EventEmitter<{ pos: Point, drawer: Drawer }>()
         /** Triggers when this button is released */
@@ -129,6 +137,16 @@ export namespace DrawerInput {
         /** Was this button released between this and last frame */
         public released() {
             return !this.down && this.lastDown
+        }
+
+        /** Started this button dragging between this and last frame */
+        public dragStart() {
+            return this.dragging && !this.lastDragging
+        }
+
+        /** Ended this button dragging between this and last frame */
+        public dragEnd() {
+            return !this.dragging && this.lastDragging
         }
 
         constructor(
