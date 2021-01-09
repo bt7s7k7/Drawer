@@ -1,10 +1,14 @@
-import { Drawer } from "../drawer/Drawer";
-import { Point } from "../drawer/Point";
-import { Disposable } from "../eventLib/Disposable";
-import { EventEmitter } from "../eventLib/EventEmitter";
+import { Drawer } from "../drawer/Drawer"
+import { Point } from "../drawer/Point"
+import { Disposable, DISPOSE } from "../eventLib/Disposable"
+import { EventEmitter } from "../eventLib/EventEmitter"
+import { EventListener } from "../eventLib/EventListener"
+
+const KEYS = Symbol("keys")
 
 export class DrawerInput extends Disposable {
     public readonly mouse = new DrawerInput.Mouse()
+    public readonly keyboard = new DrawerInput.Keyboard()
     /** Triggers every frame */
     public readonly onDraw = new EventEmitter<{ deltaTime: number }>()
     /** The drawer currently being used, only guaranteed to work in event handlers */
@@ -22,33 +26,34 @@ export class DrawerInput extends Disposable {
         this.mouse.pos = pos
         const delta = pos.add(lastPos.mul(-1))
 
-        this.mouse.onMove.emit({ pos, lastPos, delta, drawer })
+        this.mouse.onMove.emit({ pos, lastPos, delta })
 
         for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right]) {
             if (button.down) {
-                button.onMove.emit({ pos, delta, lastPos, drawer })
+                button.onMove.emit({ pos, delta, lastPos })
 
                 if (!button.dragging && button.downPos.dist(pos) > this.dragThreshold) {
                     button.dragging = true
-                    button.onDragStart.emit({ pos, drawer })
+                    button.onDragStart.emit({ pos })
                 }
 
                 if (button.dragging) {
-                    button.onDrag.emit({ pos, delta, lastPos, drawer })
+                    button.onDrag.emit({ pos, delta, lastPos })
                 }
             }
 
             if (type != "move" && button.buttonIndex == event.button) {
                 if (type == "down") {
-                    button.onDown.emit({ pos, drawer })
                     button.down = true
                     button.downPos = pos
+                    button.onDown.emit({ pos })
                 }
                 if (type == "up") {
-                    button.onUp.emit({ pos, drawer })
-                    if (button.dragging) button.onDragEnd.emit({ pos, drawer })
                     button.down = false
+                    const wasDragging = button.dragging
                     button.dragging = false
+                    button.onUp.emit({ pos })
+                    if (wasDragging) button.onDragEnd.emit({ pos })
                 }
             }
         }
@@ -80,6 +85,24 @@ export class DrawerInput extends Disposable {
             button.lastDown = button.down
             button.lastDragging = button.dragging
         }
+
+        for (const key of Object.values(this.keyboard[KEYS])) {
+            key.lastDown = key.down
+        }
+    }
+
+    public processKeyboardEvent(drawer: Drawer, type: "up" | "down", event: KeyboardEvent) {
+        const key = this.keyboard.key(event.code)
+
+        if (type == "down") {
+            key.down = true
+            key.onDown.emit()
+        }
+
+        if (type == "up") {
+            key.down = false
+            key.onUp.emit()
+        }
     }
 
     constructor(
@@ -100,7 +123,7 @@ export namespace DrawerInput {
         /** Position of the mouse last frame */
         public lastPos = new Point()
         /** Triggers when the mouse moves */
-        public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point, drawer: Drawer }>()
+        public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
     }
 
     export class MouseButton extends Disposable {
@@ -112,22 +135,22 @@ export namespace DrawerInput {
         public dragging = false
         public lastDragging = false
         /** Triggers when this button is pressed */
-        public readonly onDown = new EventEmitter<{ pos: Point, drawer: Drawer }>()
+        public readonly onDown = new EventEmitter<{ pos: Point }>()
         /** Triggers when this button is released */
-        public readonly onUp = new EventEmitter<{ pos: Point, drawer: Drawer }>()
+        public readonly onUp = new EventEmitter<{ pos: Point }>()
         /** Triggers when the mouse moves when this button is down. Only triggers
          *  after the mouse moves a distance from the origin to prevent triggering 
          *  during clicking, to trigger anyway use onMove */
-        public readonly onDrag = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point, drawer: Drawer }>()
+        public readonly onDrag = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
         /** Triggers when dragging starts
          *  @see {onDrag} */
-        public readonly onDragStart = new EventEmitter<{ pos: Point, drawer: Drawer }>()
+        public readonly onDragStart = new EventEmitter<{ pos: Point }>()
         /** Triggers when dragging stops
          *  @see {onDrag} */
-        public readonly onDragEnd = new EventEmitter<{ pos: Point, drawer: Drawer }>()
+        public readonly onDragEnd = new EventEmitter<{ pos: Point }>()
         /** Triggers when the mouse moves when this button is down. Can trigger
          *  during clicking, to prevent that use onDrag */
-        public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point, drawer: Drawer }>()
+        public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
 
         /** Was this button pressed between this and last frame */
         public pressed() {
@@ -152,5 +175,37 @@ export namespace DrawerInput {
         constructor(
             public readonly buttonIndex: number
         ) { super() }
+    }
+
+    export class Keyboard extends EventListener {
+        public readonly onDown = new EventEmitter<{ key: Key }>()
+        public readonly onUp = new EventEmitter<{ key: Key }>()
+
+        public key(code: string) {
+            if (!(code in this[KEYS])) {
+                const key = this[KEYS][code] = new Key(code)
+
+                key.onDown.add(this, () => this.onDown.emit({ key }))
+                key.onUp.add(this, () => this.onUp.emit({ key }))
+            }
+            return this[KEYS][code]
+        }
+
+        public [DISPOSE]() {
+            super[DISPOSE]()
+
+            Object.values(this[KEYS]).forEach(v => v.dispose())
+        }
+
+        protected [KEYS]: Record<string, Key> = {}
+    }
+
+    export class Key extends Disposable {
+        public down = false
+        public lastDown = false
+        public readonly onDown = new EventEmitter<void>()
+        public readonly onUp = new EventEmitter<void>()
+
+        constructor(public readonly code: string) { super() }
     }
 }

@@ -83,6 +83,11 @@ const buildCommon = (self: ClientEventListener, drawerInput: DrawerInput) => {
                 .lineTo(pos)
                 .stroke()
         },
+        drawKey(key: DrawerInput.Key, down: boolean) {
+            drawerInput.drawer
+                .setStyle(down ? "#00ff00" : "#ff0000")
+                .fillText(key.code, drawerInput.mouse.pos.add(20, 20), 14, "Arial")
+        },
         buttons: [
             { button: drawerInput.mouse.left, color: "#ff0000" },
             { button: drawerInput.mouse.middle, color: "#00ff00" },
@@ -132,6 +137,16 @@ const reactiveModeConsumer = defineDrawerInputConsumer((self, drawerInput) => {
             common.drawDrag(pos, lastPos, color)
         })
     }
+
+    drawerInput.keyboard.onDown.add(self, ({ key }) => {
+        common.clear()
+        common.drawKey(key, true)
+    })
+
+    drawerInput.keyboard.onUp.add(self, ({ key }) => {
+        common.clear()
+        common.drawKey(key, false)
+    })
 })
 
 const frameModeConsumer = defineDrawerInputConsumer((self, drawerInput) => {

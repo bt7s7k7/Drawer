@@ -24,7 +24,17 @@ export const DrawerView = defineComponent({
             }
             update()
 
-            onUnmounted(() => cancelAnimationFrame(rafId))
+            const keyDown = (event: KeyboardEvent) => props.drawerInput?.processKeyboardEvent(drawer.value!, "down", event)
+            const keyUp = (event: KeyboardEvent) => props.drawerInput?.processKeyboardEvent(drawer.value!, "up", event)
+
+            window.addEventListener("keydown", keyDown)
+            window.addEventListener("keyup", keyUp)
+
+            onUnmounted(() => {
+                cancelAnimationFrame(rafId)
+                window.removeEventListener("keydown", keyDown)
+                window.removeEventListener("keyup", keyUp)
+            })
         })
 
         return () => (

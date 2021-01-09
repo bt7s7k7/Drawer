@@ -162,6 +162,7 @@ export class Drawer {
             if (!source) {
                 this.ctx.drawImage(realImage, ...dest.spread())
             } else {
+                // @ts-ignore
                 this.ctx.drawImage(realImage, ...source.spread(), ...dest.spread())
             }
         }
