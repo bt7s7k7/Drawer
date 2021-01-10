@@ -12,3 +12,9 @@ export function defineDrawerInputConsumer(callback: (self: ClientEventListener, 
         }
     }
 }
+
+export type DrawerInputConsumer = ReturnType<DrawerInputConsumer.Builder["create"]>
+
+export namespace DrawerInputConsumer {
+    export type Builder = ReturnType<typeof defineDrawerInputConsumer>
+}

@@ -1,12 +1,17 @@
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from '@vue/composition-api';
 import { Drawer } from '../drawer/Drawer';
 import { DrawerInput } from '../drawerInput/DrawerInput';
+import { DrawerInputConsumer } from '../drawerInput/DrawerInputConsumer';
 
 export const DrawerView = defineComponent({
     name: "DrawerView",
     props: {
         drawerInput: {
-            type: DrawerInput
+            type: DrawerInput,
+            default: () => new DrawerInput()
+        },
+        consumer: {
+            type: Object as PropType<DrawerInputConsumer.Builder>
         }
     },
     setup(props, ctx) {
@@ -36,6 +41,17 @@ export const DrawerView = defineComponent({
                 window.removeEventListener("keyup", keyUp)
             })
         })
+
+        let prevConsumer: DrawerInputConsumer | null = null
+        onUnmounted(() => prevConsumer?.dispose())
+
+        watch(() => props.consumer, (newConsumer) => {
+            prevConsumer?.dispose()
+
+            if (newConsumer) {
+                prevConsumer = newConsumer.create(props.drawerInput)
+            }
+        }, { immediate: true })
 
         return () => (
             <canvas

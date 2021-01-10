@@ -1,11 +1,10 @@
-import { defineComponent, ref, watch } from '@vue/composition-api'
+import { computed, defineComponent, ref } from '@vue/composition-api'
 import { Drawer } from '../../drawer/Drawer'
 import { Point } from '../../drawer/Point'
 import { DrawerInput } from '../../drawerInput/DrawerInput'
 import { defineDrawerInputConsumer } from '../../drawerInput/DrawerInputConsumer'
 import { DrawerView } from '../../drawerInputVue/DrawerView'
 import { ClientEventListener } from '../../eventLib/ClientEventListener'
-import { EventListener } from '../../eventLib/EventListener'
 
 const buildCommon = (self: ClientEventListener, drawerInput: DrawerInput) => {
     const traceLayer = new Drawer()
@@ -184,13 +183,7 @@ export const Input = defineComponent({
     name: "Input",
     setup(props, ctx) {
         const frameMode = ref(false)
-        const drawerInput = new DrawerInput()
-        let consumer: EventListener | null = null
-
-        watch(() => frameMode.value, (frameMode) => {
-            if (consumer) consumer.dispose()
-            consumer = (frameMode ? frameModeConsumer : reactiveModeConsumer).create(drawerInput)
-        }, { immediate: true })
+        const consumer = computed(() => frameMode.value ? frameModeConsumer : reactiveModeConsumer)
 
         return () => (
             <div class={["vh-100", "d-flex", "vw-100", "flex-row", "position-relative", "align-items-start"]}>
@@ -200,7 +193,7 @@ export const Input = defineComponent({
                 >
                     Use frame mode
                 </b-form-checkbox>
-                <DrawerView drawerInput={drawerInput} class="position-absolute w-100 h-100" />
+                <DrawerView consumer={consumer.value} class="position-absolute w-100 h-100" />
             </div>
         )
     }
