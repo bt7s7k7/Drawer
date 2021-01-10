@@ -1,7 +1,8 @@
+import { Color } from "./Color"
 import { Point } from "./Point"
 import { Rect } from "./Rect"
 
-type DrawerStyle = CanvasRenderingContext2D["fillStyle"]
+type DrawerStyle = CanvasRenderingContext2D["fillStyle"] | Color
 
 export class Drawer {
     public size = new Rect()
@@ -12,6 +13,7 @@ export class Drawer {
 
     /** Sets the stroke and fill style */
     setStyle(color: DrawerStyle) {
+        if (color instanceof Color) color = color.toStyle()
         this.ctx.fillStyle = color
         this.ctx.strokeStyle = color
         return this
