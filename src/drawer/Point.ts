@@ -76,6 +76,10 @@ export class Point {
         } else return this
     }
 
+    area() {
+        return this.x * this.y
+    }
+
     static dot(a: Point, b: Point) {
         return a.x * b.x + a.y * b.y
     }
