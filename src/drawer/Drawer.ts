@@ -169,6 +169,25 @@ export class Drawer {
 
         return this
     }
+
+    translate(offset: Point) {
+        this.ctx.translate(offset.x, offset.y)
+        return this
+    }
+
+    rotate(angle: number) {
+        this.ctx.rotate(angle)
+        return this
+    }
+
+    scale(scale: number | Point) {
+        if (typeof scale == "number") {
+            this.ctx.scale(scale, scale)
+        } else {
+            this.ctx.scale(scale.x, scale.y)
+        }
+        return this
+    }
 }
 
 export namespace Drawer {
