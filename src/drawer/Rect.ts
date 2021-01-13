@@ -103,4 +103,23 @@ export class Rect {
     equals(other: Rect) {
         return this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height
     }
+
+    awayVector(point: Point) {
+        let x = 0
+        let y = 0
+
+        const start = this.pos()
+        const end = this.end()
+
+        if (point.x < start.x) x = -1
+        if (point.x > end.x) x = 1
+        if (point.y < start.y) y = -1
+        if (point.y > end.y) y = 1
+
+        return new Point(x, y)
+    }
+
+    area() {
+        return this.width * this.height
+    }
 }
