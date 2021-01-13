@@ -50,10 +50,9 @@ export class DrawerInput extends Disposable {
                 }
                 if (type == "up") {
                     button.down = false
-                    const wasDragging = button.dragging
-                    button.dragging = false
                     button.onUp.emit({ pos })
-                    if (wasDragging) button.onDragEnd.emit({ pos })
+                    if (button.dragging) button.onDragEnd.emit({ pos })
+                    button.dragging = false
                 }
             }
         }
