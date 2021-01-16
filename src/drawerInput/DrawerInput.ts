@@ -18,9 +18,9 @@ export class DrawerInput extends Disposable {
     /** Time elapsed since last frame */
     public deltaTime = 0
 
-    public processMouseInput(drawer: Drawer, type: "up" | "down" | "move", event: MouseEvent) {
+    public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave", event: MouseEvent) {
         this.drawer = drawer
-        const pos = new Point(event.offsetX, event.offsetY)
+        const pos = type == "leave" ? new Point(NaN, NaN) : new Point(event.offsetX, event.offsetY)
 
         const lastPos = this.mouse.pos
         this.mouse.pos = pos
@@ -54,6 +54,13 @@ export class DrawerInput extends Disposable {
                     if (button.dragging) button.onDragEnd.emit({ pos })
                     button.dragging = false
                 }
+            }
+
+            if (type == "leave") {
+                button.down = false
+                button.onUp.emit({ pos })
+                if (button.dragging) button.onDragEnd.emit({ pos })
+                button.dragging = false
             }
         }
     }

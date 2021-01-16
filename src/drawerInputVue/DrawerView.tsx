@@ -60,7 +60,8 @@ export const DrawerView = defineComponent({
                     mousemove: (event: MouseEvent) => props.drawerInput?.processMouseInput(drawer.value!, "move", event),
                     mousedown: (event: MouseEvent) => props.drawerInput?.processMouseInput(drawer.value!, "down", event),
                     mouseup: (event: MouseEvent) => props.drawerInput?.processMouseInput(drawer.value!, "up", event),
-                    contextmenu: (event: Event) => event.preventDefault()
+                    contextmenu: (event: Event) => event.preventDefault(),
+                    mouseleave: (event: MouseEvent) => props.drawerInput?.processMouseInput(drawer.value!, "leave", event)
                 }}
             ></canvas>
         )
