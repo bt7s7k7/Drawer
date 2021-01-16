@@ -122,4 +122,11 @@ export class Rect {
     area() {
         return this.width * this.height
     }
+
+    clampPoint(point: Point) {
+        return new Point(
+            Math.max(this.x, Math.min(this.x + this.width, point.x)),
+            Math.max(this.y, Math.min(this.y + this.height, point.y))
+        )
+    }
 }

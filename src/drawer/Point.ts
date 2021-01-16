@@ -83,4 +83,27 @@ export class Point {
     static dot(a: Point, b: Point) {
         return a.x * b.x + a.y * b.y
     }
+
+    static project(start: Point, direction: Point, target: Point) {
+        const targetStart = target.add(start.mul(-1))
+        const dot = this.dot(direction, targetStart)
+
+        return {
+            length: dot,
+            point: () => start.add(direction.mul(dot))
+        }
+    }
+
+    static cardinalDirection(start: Point, end: Point) {
+        const diff = end.add(start.mul(-1))
+
+        const xAbs = Math.abs(diff.x)
+        const yAbs = Math.abs(diff.y)
+
+        if (xAbs > yAbs) {
+            return new Point(diff.x, 0)
+        } else {
+            return new Point(0, diff.y)
+        }
+    }
 }
