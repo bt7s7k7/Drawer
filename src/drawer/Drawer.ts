@@ -188,6 +188,16 @@ export class Drawer {
         }
         return this
     }
+
+    setLineDash(dash: number[]) {
+        this.ctx.setLineDash(dash)
+        return this
+    }
+
+    setLineDashOffset(offset: number) {
+        this.ctx.lineDashOffset = offset
+        return this
+    }
 }
 
 export namespace Drawer {
