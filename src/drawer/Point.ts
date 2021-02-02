@@ -106,4 +106,7 @@ export class Point {
             return new Point(0, diff.y)
         }
     }
+
+    /** [1, 1] */
+    static one = new Point(1, 1)
 }
