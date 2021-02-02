@@ -18,7 +18,7 @@ export class Color {
     }
 
     public opacity(opacity: number) {
-        return new Color(this.r, this.b, this.g, opacity)
+        return new Color(this.r, this.g, this.b, opacity)
     }
 
     constructor(
