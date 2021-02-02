@@ -2,6 +2,7 @@ import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from '@
 import { fromTextArea } from "codemirror"
 import "codemirror/lib/codemirror.css"
 import "codemirror/mode/javascript/javascript"
+import { Color } from '../../../../drawer/Color'
 import { Drawer } from '../../../../drawer/Drawer'
 import { Point } from '../../../../drawer/Point'
 import { Rect } from '../../../../drawer/Rect'
@@ -81,6 +82,7 @@ export const Editor = defineComponent({
                     Drawer,
                     Point,
                     Rect,
+                    Color,
                     range: (num: number) => {
                         const length = Math.floor(num)
 
