@@ -99,14 +99,22 @@ export class Drawer {
     }
 
     /** Strokes the path */
-    stroke() {
-        this.ctx.stroke()
+    stroke(path?: Path2D) {
+        if (path) {
+            this.ctx.stroke(path)
+        } else {
+            this.ctx.stroke()
+        }
         return this
     }
 
     /** Fills the path */
-    fill() {
-        this.ctx.fill()
+    fill(path?: Path2D) {
+        if (path) {
+            this.ctx.fill(path)
+        } else {
+            this.ctx.fill()
+        }
         return this
     }
 
