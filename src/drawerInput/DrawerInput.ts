@@ -21,6 +21,8 @@ export class DrawerInput extends Disposable {
     public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave", event: MouseEvent) {
         this.drawer = drawer
         const pos = type == "leave" ? new Point(NaN, NaN) : new Point(event.offsetX, event.offsetY)
+        if (type == "leave") this.mouse.over = false
+        else this.mouse.over = true
 
         const lastPos = this.mouse.pos
         this.mouse.pos = pos
@@ -122,6 +124,8 @@ export namespace DrawerInput {
         public readonly right = new MouseButton(2)
         public readonly middle = new MouseButton(1)
 
+        /** if the mouse is over the canvas */
+        public over = false
         /** Position of the mouse */
         public pos = new Point()
         /** Movement of the mouse since last frame */
