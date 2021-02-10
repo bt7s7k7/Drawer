@@ -54,7 +54,7 @@ export class Drawer {
     /** Changes the rendering context's size to the real size of the canvas element */
     setNativeSize() {
         const canvas = this.ctx.canvas
-        const size = new Rect(canvas.getBoundingClientRect()).origin()
+        const size = new Rect(0, 0, canvas.scrollWidth, canvas.scrollHeight)
         this.setSize(size)
 
         return this
