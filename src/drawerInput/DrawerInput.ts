@@ -100,6 +100,9 @@ export class DrawerInput extends Disposable {
     }
 
     public processKeyboardEvent(drawer: Drawer, type: "up" | "down", event: KeyboardEvent) {
+        // @ts-ignore
+        if (event.target?.tagName?.toLowerCase() == "input" || event.target?.tagName?.toLowerCase() == "textarea") return
+
         const key = this.keyboard.key(event.code)
 
         if (type == "down") {
