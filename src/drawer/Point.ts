@@ -107,6 +107,14 @@ export class Point {
         }
     }
 
+    static min(a: Point, b: Point) {
+        return new Point(Math.min(a.x, b.x), Math.min(a.y, b.y),)
+    }
+
+    static max(a: Point, b: Point) {
+        return new Point(Math.max(a.x, b.x), Math.max(a.y, b.y),)
+    }
+
     /** [1, 1] */
     static one = new Point(1, 1)
 }
