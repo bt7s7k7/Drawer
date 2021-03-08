@@ -19,6 +19,7 @@ export class DrawerInput extends Disposable {
     public deltaTime = 0
 
     public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave", event: MouseEvent) {
+        (document.activeElement as HTMLElement)?.blur?.()
         this.drawer = drawer
         const pos = type == "leave" ? new Point(NaN, NaN) : new Point(event.offsetX, event.offsetY)
         if (type == "leave") this.mouse.over = false
