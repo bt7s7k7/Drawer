@@ -1,4 +1,4 @@
-import { Point } from "./Point";
+import { Point } from "./Point"
 
 export class Rect {
     size() {
@@ -17,7 +17,7 @@ export class Rect {
         return new Rect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.width), Math.floor(this.height))
     }
 
-    public readonly x: number;
+    public readonly x: number
     public readonly y: number
 
     constructor(x: number | { x: number, y: number } | { x: number, y: number, width: number, height: number } = 0, y: number | { x: number, y: number } = 0, public readonly width = 0, public readonly height = 0) {
@@ -128,5 +128,21 @@ export class Rect {
             Math.max(this.x, Math.min(this.x + this.width, point.x)),
             Math.max(this.y, Math.min(this.y + this.height, point.y))
         )
+    }
+
+    scale(rect: Rect) {
+        return new Rect(this.x, this.y, this.width * rect.width, this.height * rect.height)
+    }
+
+    antiScale(rect: Rect) {
+        return new Rect(this.x, this.y, this.width / rect.width, this.height / rect.height)
+    }
+
+    ceilSize() {
+        return new Rect(this.x, this.y, Math.ceil(this.width), Math.ceil(this.height))
+    }
+
+    static extends(center: Point, size: Point) {
+        return new Rect(center.add(size.mul(-0.5)), size)
     }
 }
