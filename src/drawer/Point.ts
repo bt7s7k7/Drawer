@@ -124,4 +124,5 @@ export class Point {
 
     /** [1, 1] */
     static one = new Point(1, 1)
+    static zero = new Point()
 }
