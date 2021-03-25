@@ -18,6 +18,13 @@ export class Point {
             return new Point(this.x * other, this.y * otherY)
     }
 
+    antiScale(other: { x: number, y: number } | number, otherY: number = 0) {
+        if (typeof other === "object")
+            return new Point(this.x / other.x, this.y / other.y)
+        else
+            return new Point(this.x / other, this.y / otherY)
+    }
+
     invert() {
         return new Point(1 / this.x, 1 / this.y)
     }
