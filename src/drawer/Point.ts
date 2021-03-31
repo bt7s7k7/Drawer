@@ -29,7 +29,7 @@ export class Point {
         return new Point(1 / this.x, 1 / this.y)
     }
 
-    public readonly x: number;
+    public readonly x: number
     constructor(x: number | { x: number, y: number } = 0, public readonly y = 0) {
         if (typeof x === "object") {
             this.x = x.x
@@ -123,6 +123,16 @@ export class Point {
     }
 
     /** [1, 1] */
-    static one = new Point(1, 1)
-    static zero = new Point()
+    static readonly one = new Point(1, 1)
+    /** [0, 0] */
+    static readonly zero = new Point()
+    /** [0, -1] */
+    static readonly up = new Point(0, -1)
+    /** [0, 1] */
+    static readonly down = new Point(0, 1)
+    /** [-1, 0] */
+    static readonly left = new Point(-1, 0)
+    /** [1, 0] */
+    static readonly right = new Point(1, 0)
+    static readonly directions = [Point.up, Point.right, Point.down, Point.left]
 }
