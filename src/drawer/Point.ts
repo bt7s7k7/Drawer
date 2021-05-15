@@ -114,6 +114,10 @@ export class Point {
         }
     }
 
+    lerp(target: Point, frac: number) {
+        return this.add(target.add(this.mul(-1)).mul(frac))
+    }
+
     static min(a: Point, b: Point) {
         return new Point(Math.min(a.x, b.x), Math.min(a.y, b.y),)
     }
