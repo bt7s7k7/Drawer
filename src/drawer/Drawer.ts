@@ -32,23 +32,41 @@ export class Drawer {
         return this
     }
 
-    fillText(text: string, pos: Point, size: number, font: string) {
-        var sizeText = size + "px"
-        var fontStyle = `${sizeText} ${font}`
-        this.ctx.font = fontStyle
+    fillText(text: string, pos: Point, size: number, font: string): Drawer
+    fillText(text: string, pos: Point, options: Drawer.TextOptions): Drawer
+    fillText(text: string, pos: Point, sizeOrOptions: number | Drawer.TextOptions, font: string = "") {
+        if (typeof sizeOrOptions == "number") {
+            return this.fillText(text, pos, { size: sizeOrOptions, font })
+        } else {
+            const canvasStyle = getComputedStyle(this.ctx.canvas)
 
-        if (this.ctx.font !== fontStyle) {
-            throw new Error(`Invalid font for drawer, size = ${size}, font = ${font} (ctx returned ${this.ctx.font})`)
+            var size = typeof sizeOrOptions.size == "number" ? sizeOrOptions.size + "px"
+                : typeof sizeOrOptions.size == "string" ? sizeOrOptions.size
+                    : canvasStyle.fontSize
+
+            var font = sizeOrOptions.font ? sizeOrOptions.font : canvasStyle.fontFamily
+            var fontStyle = `${size} ${font}`
+            this.ctx.font = fontStyle
+
+
+            if (this.ctx.font !== fontStyle) {
+                throw new Error(`Invalid font for drawer, size = ${size}, font = ${font} (ctx returned ${this.ctx.font})`)
+            }
+
+            this.ctx.textAlign = sizeOrOptions.align ?? "start"
+            this.ctx.textBaseline = sizeOrOptions.baseline ?? "alphabetic"
+
+            const lines = text.split("\n")
+            const measurement = this.ctx.measureText(lines[0])
+            const lineHeight = measurement.fontBoundingBoxAscent + measurement.fontBoundingBoxDescent
+            lines.forEach((v, i) => {
+                var linePos = pos.add(0, lineHeight * i)
+
+                this.ctx.fillText(v, ...linePos.spread())
+            })
+
+            return this
         }
-
-        var lines = text.split("\n")
-        lines.forEach((v, i) => {
-            var linePos = pos.add(0, size * i)
-
-            this.ctx.fillText(v, ...linePos.spread())
-        })
-
-        return this
     }
 
     /** Changes the rendering context's size to the real size of the canvas element */
@@ -210,4 +228,11 @@ export class Drawer {
 
 export namespace Drawer {
     export type Style = CanvasRenderingContext2D["fillStyle"] | Color
+
+    export interface TextOptions {
+        font?: string
+        size?: string | number
+        align?: CanvasTextAlign
+        baseline?: CanvasTextBaseline
+    }
 }
