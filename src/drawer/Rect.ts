@@ -10,7 +10,7 @@ export class Rect {
     }
 
     makePixelPerfect(): Rect {
-        return new Rect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.width), Math.floor(this.height))
+        return new Rect(Math.floor(this.x) + 0.5, Math.floor(this.y) + 0.5, Math.floor(this.width), Math.floor(this.height))
     }
 
     floor(): Rect {
