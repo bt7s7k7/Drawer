@@ -5,8 +5,12 @@ import { Rect } from "./Rect"
 export class Drawer {
     public size = new Rect()
 
-    constructor(public ctx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d")!) {
-        this.setNativeSize()
+    constructor(public ctx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d")!, protected readonly fragile: "fragile" | boolean = false) {
+        if (!fragile) {
+            this.setNativeSize()
+        } else {
+            this.size = new Rect(0, 0, ctx.canvas.width, ctx.canvas.height)
+        }
     }
 
     /** Sets the stroke and fill style */
@@ -38,7 +42,14 @@ export class Drawer {
         if (typeof sizeOrOptions == "number") {
             return this.fillText(text, pos, { size: sizeOrOptions, font })
         } else {
-            const canvasStyle = getComputedStyle(this.ctx.canvas)
+            const canvasStyle = globalThis["getComputedStyle"] ? getComputedStyle(this.ctx.canvas) : {
+                get fontSize(): string {
+                    throw new Error("Inheriting size is not supported in this environment, please explicitly specify size in options")
+                },
+                get fontFamily(): string {
+                    throw new Error("Inheriting font is not supported in this environment, please explicitly specify font in options")
+                }
+            }
 
             var size = typeof sizeOrOptions.size == "number" ? sizeOrOptions.size + "px"
                 : typeof sizeOrOptions.size == "string" ? sizeOrOptions.size
@@ -58,7 +69,7 @@ export class Drawer {
 
             const lines = text.split("\n")
             const measurement = this.ctx.measureText(lines[0])
-            const lineHeight = measurement.fontBoundingBoxAscent + measurement.fontBoundingBoxDescent
+            const lineHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent
             lines.forEach((v, i) => {
                 var linePos = pos.add(0, lineHeight * i)
 
@@ -71,6 +82,8 @@ export class Drawer {
 
     /** Changes the rendering context's size to the real size of the canvas element */
     setNativeSize() {
+        if (this.fragile) throw new Error("Cannot set size of fragile canvas")
+
         const canvas = this.ctx.canvas
         const size = new Rect(0, 0, canvas.scrollWidth, canvas.scrollHeight)
         this.setSize(size)
@@ -79,6 +92,8 @@ export class Drawer {
     }
 
     setSize(size: Point | Rect) {
+        if (this.fragile) throw new Error("Cannot set size of fragile canvas")
+
         var canvas = this.ctx.canvas
         this.size = size instanceof Point ? new Rect(new Point(), size) : size.origin()
         canvas.width = this.size.width
