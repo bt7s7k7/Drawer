@@ -31,13 +31,13 @@ export class DrawerInput extends Disposable {
 
         this.mouse.onMove.emit({ pos, lastPos, delta })
 
-        for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right]) {
+        for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right, this.mouse.any]) {
             if (button.down) {
                 button.onMove.emit({ pos, delta, lastPos })
 
                 if (!button.dragging && button.downPos.dist(pos) > this.dragThreshold) {
                     button.dragging = true
-                    button.onDragStart.emit({ pos })
+                    button.onDragStart.emit({ pos: button.downPos })
                 }
 
                 if (button.dragging) {
@@ -45,7 +45,7 @@ export class DrawerInput extends Disposable {
                 }
             }
 
-            if (type != "move" && button.buttonIndex == event.button) {
+            if (type != "move" && (button.buttonIndex == null || button.buttonIndex == event.button)) {
                 if (type == "down") {
                     button.down = true
                     button.downPos = pos
@@ -90,7 +90,7 @@ export class DrawerInput extends Disposable {
 
         this.mouse.lastPos = this.mouse.pos
 
-        for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right]) {
+        for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right, this.mouse.any]) {
             button.lastDown = button.down
             button.lastDragging = button.dragging
         }
@@ -127,6 +127,7 @@ export namespace DrawerInput {
         public readonly left = new MouseButton(0)
         public readonly right = new MouseButton(2)
         public readonly middle = new MouseButton(1)
+        public readonly any = new MouseButton(null)
 
         /** if the mouse is over the canvas */
         public over = false
@@ -187,7 +188,7 @@ export namespace DrawerInput {
         }
 
         constructor(
-            public readonly buttonIndex: number
+            public readonly buttonIndex: number | null
         ) { super() }
     }
 
