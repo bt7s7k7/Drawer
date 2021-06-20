@@ -142,6 +142,13 @@ export class Rect {
         return new Rect(this.x, this.y, Math.ceil(this.width), Math.ceil(this.height))
     }
 
+    getFracPoint(point: Point): Point
+    getFracPoint(x: number, y: number): Point
+    getFracPoint(pointOrX: number | Point, y?: number) {
+        const point = new Point(pointOrX, y)
+        return this.pos().add(this.size().scale(point))
+    }
+
     static extends(center: Point, size: Point) {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
