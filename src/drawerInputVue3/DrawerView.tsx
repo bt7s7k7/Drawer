@@ -1,7 +1,7 @@
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from 'vue'
-import { Drawer } from '../drawer/Drawer'
-import { DrawerInput } from '../drawerInput/DrawerInput'
-import { DrawerInputConsumer } from '../drawerInput/DrawerInputConsumer'
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from "vue"
+import { Drawer } from "../drawer/Drawer"
+import { DrawerInput } from "../drawerInput/DrawerInput"
+import { DrawerInputConsumer } from "../drawerInput/DrawerInputConsumer"
 
 export const DrawerView = defineComponent({
     name: "DrawerView",

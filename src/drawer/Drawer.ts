@@ -38,7 +38,7 @@ export class Drawer {
 
     fillText(text: string, pos: Point, size: number, font: string): Drawer
     fillText(text: string, pos: Point, options: Drawer.TextOptions): Drawer
-    fillText(text: string, pos: Point, sizeOrOptions: number | Drawer.TextOptions, font: string = "") {
+    fillText(text: string, pos: Point, sizeOrOptions: number | Drawer.TextOptions, font = "") {
         if (typeof sizeOrOptions == "number") {
             return this.fillText(text, pos, { size: sizeOrOptions, font })
         } else {
@@ -51,12 +51,12 @@ export class Drawer {
                 }
             }
 
-            var size = typeof sizeOrOptions.size == "number" ? sizeOrOptions.size + "px"
+            let size = typeof sizeOrOptions.size == "number" ? sizeOrOptions.size + "px"
                 : typeof sizeOrOptions.size == "string" ? sizeOrOptions.size
                     : canvasStyle.fontSize
 
-            var font = sizeOrOptions.font ? sizeOrOptions.font : canvasStyle.fontFamily
-            var fontStyle = `${size} ${font}`
+            let font = sizeOrOptions.font ? sizeOrOptions.font : canvasStyle.fontFamily
+            let fontStyle = `${size} ${font}`
             this.ctx.font = fontStyle
 
 
@@ -71,7 +71,7 @@ export class Drawer {
             const measurement = this.ctx.measureText(lines[0])
             const lineHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent
             lines.forEach((v, i) => {
-                var linePos = pos.add(0, lineHeight * i)
+                let linePos = pos.add(0, lineHeight * i)
 
                 this.ctx.fillText(v, ...linePos.spread())
             })
@@ -94,7 +94,7 @@ export class Drawer {
     setSize(size: Point | Rect) {
         if (this.fragile) throw new Error("Cannot set size of fragile canvas")
 
-        var canvas = this.ctx.canvas
+        let canvas = this.ctx.canvas
         this.size = size instanceof Point ? new Rect(new Point(), size) : size.origin()
         canvas.width = this.size.width
         canvas.height = this.size.height

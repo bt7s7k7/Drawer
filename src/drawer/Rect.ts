@@ -24,7 +24,7 @@ export class Rect {
         if (typeof x === "object") {
             this.x = x.x
             this.y = x.y
-            if ('width' in x) {
+            if ("width" in x) {
                 this.width = x.width
                 this.height = x.height
             } else {
@@ -64,7 +64,7 @@ export class Rect {
         return new Point(this.x + this.width, this.y + this.height)
     }
 
-    translate(offset: { x: number, y: number } | number, offsetY: number = 0) {
+    translate(offset: { x: number, y: number } | number, offsetY = 0) {
         if (typeof offset === "object") {
             return new Rect(this.x + offset.x, this.y + offset.y, this.width, this.height)
         } else {
@@ -72,7 +72,7 @@ export class Rect {
         }
     }
 
-    expand(offset: { x: number, y: number } | number, offsetY: number = 0) {
+    expand(offset: { x: number, y: number } | number, offsetY = 0) {
         if (typeof offset === "object") {
             return new Rect(this.x, this.y, this.width + offset.x, this.height + offset.y)
         } else {

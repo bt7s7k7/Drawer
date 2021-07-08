@@ -11,14 +11,14 @@ export class Point {
         return Math.atan2(this.x, this.y)
     }
 
-    scale(other: { x: number, y: number } | number, otherY: number = 0) {
+    scale(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x * other.x, this.y * other.y)
         else
             return new Point(this.x * other, this.y * otherY)
     }
 
-    antiScale(other: { x: number, y: number } | number, otherY: number = 0) {
+    antiScale(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x / other.x, this.y / other.y)
         else
@@ -49,7 +49,7 @@ export class Point {
         return new Point(this.x * amount, this.y * amount)
     }
 
-    add(other: { x: number, y: number } | number, otherY: number = 0) {
+    add(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x + other.x, this.y + other.y)
         else
@@ -77,7 +77,7 @@ export class Point {
     }
 
     clampSize(maxSize: number) {
-        var size = Math.hypot(this.x, this.y)
+        let size = Math.hypot(this.x, this.y)
         if (size > maxSize) {
             return this.normalize().mul(maxSize)
         } else return this
