@@ -6,6 +6,19 @@ import { EventListener } from "../eventLib/EventListener"
 
 const KEYS = Symbol("keys")
 
+export type KeyCode = "Backspace" | "Tab" | "Enter" | "ShiftLeft" | "ShiftRight" | "ControlLeft" |
+    "ControlRight" | "AltLeft" | "AltRight" | "Pause" | "CapsLock" | "Escape" | "Space" | "PageUp" |
+    "PageDown" | "End" | "Home" | "ArrowLeft" | "ArrowUp" | "ArrowRight" | "ArrowDown" | "PrintScreen" |
+    "Insert" | "Delete" | "Digit0" | "Digit1" | "Digit2" | "Digit3" | "Digit4" | "Digit5" | "Digit6" |
+    "Digit7" | "Digit8" | "Digit9" | "KeyA" | "KeyB" | "KeyC" | "KeyD" | "KeyE" | "KeyF" | "KeyG" | "KeyH" |
+    "KeyI" | "KeyJ" | "KeyK" | "KeyL" | "KeyM" | "KeyN" | "KeyO" | "KeyP" | "KeyQ" | "KeyR" | "KeyS" |
+    "KeyT" | "KeyU" | "KeyV" | "KeyW" | "KeyX" | "KeyY" | "KeyZ" | "MetaLeft" | "MetaRight" | "ContextMenu" |
+    "Numpad0" | "Numpad1" | "Numpad2" | "Numpad3" | "Numpad4" | "Numpad5" | "Numpad6" | "Numpad7" | "Numpad8" |
+    "Numpad9" | "NumpadMultiply" | "NumpadAdd" | "NumpadSubtract" | "NumpadDecimal" | "NumpadDivide" | "F1" |
+    "F2" | "F3" | "F4" | "F5" | "F6" | "F7" | "F8" | "F9" | "F10" | "F11" | "F12" | "NumLock" | "ScrollLock" |
+    "Semicolon" | "Equal" | "Comma" | "Minus" | "Period" | "Slash" |
+    "Backquote" | "BracketLeft" | "Backslash" | "BracketRight" | "Quote"
+
 export class DrawerInput extends Disposable {
     public readonly mouse = new DrawerInput.Mouse()
     public readonly keyboard = new DrawerInput.Keyboard()
@@ -104,7 +117,7 @@ export class DrawerInput extends Disposable {
         // @ts-ignore
         if (event.target?.tagName?.toLowerCase() == "input" || event.target?.tagName?.toLowerCase() == "textarea") return
 
-        const key = this.keyboard.key(event.code)
+        const key = this.keyboard.key(event.code as KeyCode)
 
         if (type == "down") {
             key.down = true
@@ -196,7 +209,7 @@ export namespace DrawerInput {
         public readonly onDown = new EventEmitter<{ key: Key }>()
         public readonly onUp = new EventEmitter<{ key: Key }>()
 
-        public key(code: string) {
+        public key(code: KeyCode) {
             if (!(code in this[KEYS])) {
                 const key = this[KEYS][code] = new Key(code)
 
@@ -221,6 +234,6 @@ export namespace DrawerInput {
         public readonly onDown = new EventEmitter<void>()
         public readonly onUp = new EventEmitter<void>()
 
-        constructor(public readonly code: string) { super() }
+        constructor(public readonly code: KeyCode) { super() }
     }
 }
