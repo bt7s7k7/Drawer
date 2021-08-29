@@ -23,9 +23,8 @@ export const DrawerView = defineComponent({
             drawer.value = new Drawer(canvas.value.getContext("2d")!)
 
             const update = () => {
-                rafId = requestAnimationFrame(update)
-
                 props.drawerInput?.processDrawEvent(drawer.value!, null)
+                rafId = requestAnimationFrame(update)
             }
             update()
 
