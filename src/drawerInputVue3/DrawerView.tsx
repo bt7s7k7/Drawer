@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from "vue"
+import { defineComponent, markRaw, onMounted, onUnmounted, PropType, ref, watch } from "vue"
 import { Drawer } from "../drawer/Drawer"
 import { DrawerInput } from "../drawerInput/DrawerInput"
 import { DrawerInputConsumer } from "../drawerInput/DrawerInputConsumer"
@@ -8,7 +8,7 @@ export const DrawerView = defineComponent({
     props: {
         drawerInput: {
             type: DrawerInput,
-            default: () => new DrawerInput()
+            default: () => markRaw(new DrawerInput())
         },
         consumer: {
             type: Object as PropType<DrawerInputConsumer.Builder>
@@ -20,7 +20,7 @@ export const DrawerView = defineComponent({
 
         onMounted(() => {
             let rafId = 0
-            drawer.value = new Drawer(canvas.value.getContext("2d")!)
+            drawer.value = markRaw(new Drawer(canvas.value.getContext("2d")!))
 
             const update = () => {
                 props.drawerInput?.processDrawEvent(drawer.value!, null)
