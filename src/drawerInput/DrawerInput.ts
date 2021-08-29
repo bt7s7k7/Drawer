@@ -30,6 +30,7 @@ export class DrawerInput extends Disposable {
     public time = -1
     /** Time elapsed since last frame */
     public deltaTime = 0
+    public readonly onResize = new EventEmitter()
 
     public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave", event: MouseEvent) {
         (document.activeElement as HTMLElement)?.blur?.()
