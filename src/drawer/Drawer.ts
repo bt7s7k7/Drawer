@@ -21,6 +21,18 @@ export class Drawer {
         return this
     }
 
+    setFillStyle(color: Drawer.Style) {
+        if (color instanceof Color) color = color.toStyle()
+        this.ctx.fillStyle = color
+        return this
+    }
+
+    setStrokeStyle(color: Drawer.Style) {
+        if (color instanceof Color) color = color.toStyle()
+        this.ctx.strokeStyle = color
+        return this
+    }
+
     fillRect(rect: Rect = this.size) {
         this.ctx.fillRect(...rect.spread())
         return this
