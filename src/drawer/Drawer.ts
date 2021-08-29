@@ -172,6 +172,20 @@ export class Drawer {
         return this
     }
 
+    shape(points: Point[]) {
+        let first = true
+        for (const point of points) {
+            if (first) {
+                this.move(point)
+                first = false
+                continue
+            }
+            this.lineTo(point)
+        }
+
+        return this
+    }
+
     /** Sets a linear gradient as a style */
     setLinearGradient(start: Point, end: Point, stops: [number, string][]) {
         let gradient = this.ctx.createLinearGradient(start.x, start.y, end.x, end.y)
