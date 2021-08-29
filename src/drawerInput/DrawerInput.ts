@@ -22,6 +22,7 @@ export type KeyCode = "Backspace" | "Tab" | "Enter" | "ShiftLeft" | "ShiftRight"
 export class DrawerInput extends Disposable {
     public readonly mouse = new DrawerInput.Mouse()
     public readonly keyboard = new DrawerInput.Keyboard()
+    public readonly touch = new DrawerInput.TouchSurface()
     /** Triggers every frame */
     public readonly onDraw = new EventEmitter<{ deltaTime: number }>()
     /** The drawer currently being used, only guaranteed to work in event handlers */
@@ -131,6 +132,44 @@ export class DrawerInput extends Disposable {
         }
     }
 
+    public processTouchEvent(drawer: Drawer, type: "start" | "move" | "end", event: TouchEvent) {
+        const drawerPos = new Point(this.drawer.ctx.canvas.clientLeft, this.drawer.ctx.canvas.clientTop)
+
+        for (const touch of event.changedTouches) {
+            const clientPos = new Point(touch.clientX, touch.clientY)
+
+            const pos = clientPos.add(drawerPos.mul(-1))
+
+            if (type == "start") {
+                this.touch.count++
+
+                const instance = this.touch.list[touch.identifier] = new DrawerInput.TouchInstance(touch.identifier)
+                instance.lastPos = instance.pos = pos
+
+                this.touch.onStart.emit({ instance, pos })
+            } else {
+                const instance = this.touch.list[touch.identifier]
+                const lastPos = instance.lastPos = instance.pos
+                instance.pos = pos
+
+                if (type == "move") {
+                    instance.onMove.emit({ pos, lastPos })
+                    this.touch.onMove.emit({ pos, lastPos, instance })
+                }
+
+                if (type == "end") {
+                    this.touch.count--
+
+                    instance.onEnd.emit({ pos, lastPos })
+                    this.touch.onEnd.emit({ pos, lastPos, instance })
+
+                    instance.dispose()
+                    delete this.touch.list[touch.identifier]
+                }
+            }
+        }
+    }
+
     constructor(
         public dragThreshold = 10
     ) { super() }
@@ -236,5 +275,24 @@ export namespace DrawerInput {
         public readonly onUp = new EventEmitter<void>()
 
         constructor(public readonly code: KeyCode) { super() }
+    }
+
+    export class TouchInstance extends Disposable {
+        public readonly onEnd = new EventEmitter<{ pos: Point, lastPos: Point }>()
+        public readonly onMove = new EventEmitter<{ pos: Point, lastPos: Point }>()
+        public pos = Point.zero
+        public lastPos = Point.zero
+
+        constructor(
+            public readonly identifier: number
+        ) { super() }
+    }
+
+    export class TouchSurface extends Disposable {
+        public count = 0
+        public readonly list: Record<number, TouchInstance> = {}
+        public readonly onStart = new EventEmitter<{ instance: TouchInstance, pos: Point }>()
+        public readonly onEnd = new EventEmitter<{ instance: TouchInstance, pos: Point, lastPos: Point }>()
+        public readonly onMove = new EventEmitter<{ instance: TouchInstance, pos: Point, lastPos: Point }>()
     }
 }

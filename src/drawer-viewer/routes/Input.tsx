@@ -19,6 +19,9 @@ const buildCommon = (self: ClientEventListener, drawerInput: DrawerInput) => {
             traceLayer.matchSize(drawerInput.drawer)
             drawerInput.drawer.blit(traceLayer)
         },
+        clearDrag() {
+            traceLayer.clear()
+        },
         drawPosIndicator(pos: Point) {
             drawerInput.drawer
                 .setStyle("white")
@@ -91,7 +94,18 @@ const buildCommon = (self: ClientEventListener, drawerInput: DrawerInput) => {
             { button: drawerInput.mouse.left, color: "#ff0000" },
             { button: drawerInput.mouse.middle, color: "#00ff00" },
             { button: drawerInput.mouse.right, color: "#0000ff" },
-        ]
+        ],
+        touchColors: [
+            "#ffff00",
+            "#00ffff",
+            "#ff00ff",
+            "#ff0000",
+            "#00ff00",
+            "#0000ff",
+        ],
+        getTouchColor(id: number) {
+            return this.touchColors[id % this.touchColors.length]
+        }
     }
 }
 
@@ -145,6 +159,25 @@ const reactiveModeConsumer = defineDrawerInputConsumer((self, drawerInput) => {
     drawerInput.keyboard.onUp.add(self, ({ key }) => {
         common.clear()
         common.drawKey(key, false)
+    })
+
+    drawerInput.touch.onStart.add(self, ({ instance, pos }) => {
+        common.clear()
+        common.drawDownIndicator(pos, common.getTouchColor(instance.identifier))
+    })
+
+    drawerInput.touch.onMove.add(self, ({ instance, pos, lastPos }) => {
+        common.clear()
+        common.drawDrag(pos, lastPos, common.getTouchColor(instance.identifier))
+    })
+
+    drawerInput.touch.onEnd.add(self, ({ instance, pos, lastPos }) => {
+        common.clear()
+        common.drawUpIndicator(pos, common.getTouchColor(instance.identifier))
+        common.drawDrag(pos, lastPos, common.getTouchColor(instance.identifier))
+        if (drawerInput.touch.count == 0) {
+            common.clearDrag()
+        }
     })
 })
 

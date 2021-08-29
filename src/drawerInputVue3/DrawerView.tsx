@@ -32,15 +32,30 @@ export const DrawerView = defineComponent({
             const keyUp = (event: KeyboardEvent) => props.drawerInput?.processKeyboardEvent(drawer.value!, "up", event)
             const resize = () => props.drawerInput?.onResize.emit()
 
+            const touchstart = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "start", event)
+            const touchend = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "end", event)
+            const touchmove = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "move", event)
+
             window.addEventListener("keydown", keyDown)
             window.addEventListener("keyup", keyUp)
             window.addEventListener("resize", resize)
+
+            window.addEventListener("touchstart", touchstart)
+            window.addEventListener("touchend", touchend)
+            window.addEventListener("touchcancel", touchend)
+            window.addEventListener("touchmove", touchmove)
+
 
             onUnmounted(() => {
                 cancelAnimationFrame(rafId)
                 window.removeEventListener("keydown", keyDown)
                 window.removeEventListener("keyup", keyUp)
                 window.removeEventListener("resize", resize)
+
+                window.removeEventListener("touchstart", touchstart)
+                window.removeEventListener("touchend", touchend)
+                window.removeEventListener("touchcancel", touchend)
+                window.removeEventListener("touchmove", touchmove)
             })
         })
 
