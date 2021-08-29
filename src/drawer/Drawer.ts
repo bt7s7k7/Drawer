@@ -108,8 +108,15 @@ export class Drawer {
 
         let canvas = this.ctx.canvas
         this.size = size instanceof Point ? new Rect(new Point(), size) : size.origin()
-        canvas.width = this.size.width
-        canvas.height = this.size.height
+
+        this.size = new Rect(0, 0, Math.max(this.size.width, 1), Math.max(this.size.height, 1))
+
+        if (canvas.width == this.size.width && canvas.height == this.size.height) {
+            this.ctx.clearRect(0, 0, canvas.width, canvas.height)
+        } else {
+            canvas.width = this.size.width
+            canvas.height = this.size.height
+        }
 
         return this
     }
