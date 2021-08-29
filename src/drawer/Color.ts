@@ -45,5 +45,15 @@ export class Color {
     public static yellow = new Color(1, 1, 0)
     public static cyan = new Color(0, 1, 1)
     public static magenta = new Color(1, 0, 1)
+    public static fromHex(source: string) {
+        let offset = 0
+        if (source[0] == "#") offset += 1
+
+        const r = parseInt(source.substr(offset + 0, 2), 16) / 255
+        const g = parseInt(source.substr(offset + 2, 2), 16) / 255
+        const b = parseInt(source.substr(offset + 4, 2), 16) / 255
+
+        return new Color(r, g, b)
+    }
 }
 
