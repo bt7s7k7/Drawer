@@ -4,6 +4,7 @@ export class Point {
     }
 
     normalize() {
+        if (this.x == 0 && this.y == 0) return Point.zero
         return this.mul(1 / Math.hypot(this.x, this.y))
     }
 
