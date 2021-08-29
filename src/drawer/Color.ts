@@ -45,6 +45,8 @@ export class Color {
     public static yellow = new Color(1, 1, 0)
     public static cyan = new Color(0, 1, 1)
     public static magenta = new Color(1, 0, 1)
+    public static orange = new Color(1, 0.25, 0)
+
     public static fromHex(source: string) {
         let offset = 0
         if (source[0] == "#") offset += 1
