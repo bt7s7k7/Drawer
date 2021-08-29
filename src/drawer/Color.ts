@@ -17,6 +17,15 @@ export class Color {
         )
     }
 
+    public mul(value: number) {
+        return new Color(
+            this.r * value,
+            this.g * value,
+            this.b * value,
+            this.a,
+        )
+    }
+
     public opacity(opacity: number) {
         return new Color(this.r, this.g, this.b, opacity)
     }
