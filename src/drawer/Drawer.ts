@@ -125,6 +125,8 @@ export class Drawer {
         if (!this.size.equals(other.size)) {
             this.setSize(other.size)
         }
+
+        return this
     }
 
     beginPath() {
