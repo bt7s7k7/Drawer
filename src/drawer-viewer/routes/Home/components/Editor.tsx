@@ -4,6 +4,7 @@ import "codemirror/lib/codemirror.css"
 import "codemirror/mode/javascript/javascript"
 import { Color } from '../../../../drawer/Color'
 import { Drawer } from '../../../../drawer/Drawer'
+import { Matrix } from '../../../../drawer/Matrix'
 import { Point } from '../../../../drawer/Point'
 import { Rect } from '../../../../drawer/Rect'
 import { demos } from '../../../demos'
@@ -83,6 +84,7 @@ export const Editor = defineComponent({
                     Point,
                     Rect,
                     Color,
+                    Matrix,
                     range: (num: number) => {
                         const length = Math.floor(num)
 
