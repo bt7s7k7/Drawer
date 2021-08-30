@@ -135,10 +135,16 @@ export class DrawerInput extends Disposable {
     public processTouchEvent(drawer: Drawer, type: "start" | "move" | "end", event: TouchEvent) {
         const drawerPos = new Point(this.drawer.ctx.canvas.clientLeft, this.drawer.ctx.canvas.clientTop)
 
-        for (const touch of event.changedTouches) {
+        for (let i = 0, len = event.changedTouches.length; i < len; i++) {
+            const touch = event.changedTouches.item(i)
+            if (touch == null) continue
+
             const clientPos = new Point(touch.clientX, touch.clientY)
 
-            const pos = clientPos.add(drawerPos.mul(-1))
+            let pos = clientPos.add(drawerPos.mul(-1))
+            if (this.transformTouchPos) {
+                pos = this.transformTouchPos(pos, this.drawer.size.size())
+            }
 
             if (type == "start") {
                 this.touch.count++
@@ -169,6 +175,8 @@ export class DrawerInput extends Disposable {
             }
         }
     }
+
+    public transformTouchPos: null | ((point: Point, size: Point) => Point) = null
 
     constructor(
         public dragThreshold = 10
