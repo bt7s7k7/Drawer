@@ -80,7 +80,7 @@ export class Drawer {
             this.ctx.textBaseline = sizeOrOptions.baseline ?? "alphabetic"
 
             const lines = text.split("\n")
-            const measurement = this.ctx.measureText(lines[0])
+            const measurement = this.ctx.measureText(",Á")
             const lineHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent
             lines.forEach((v, i) => {
                 let linePos = pos.add(0, lineHeight * i)
