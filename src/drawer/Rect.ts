@@ -221,4 +221,7 @@ export class Rect {
     static extends(center: Point, size: Point) {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
+
+    public static one = new Rect(0, 0, 1, 1)
+    public static zero = new Rect(0, 0, 0, 0)
 }
