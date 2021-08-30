@@ -1,5 +1,16 @@
 import { Point } from "./Point"
 
+export interface RectAlignOptions {
+    width?: number
+    height?: number
+    left?: number
+    right?: number
+    top?: number
+    bottom?: number
+    size?: number
+    padding?: number
+}
+
 export class Rect {
     size() {
         return new Point(this.width, this.height)
@@ -147,6 +158,64 @@ export class Rect {
     getFracPoint(pointOrX: number | Point, y?: number) {
         const point = new Point(pointOrX, y)
         return this.pos().add(this.size().scale(point))
+    }
+
+    align(options: RectAlignOptions) {
+        let x = 0
+        let width = 0
+        let y = 0
+        let height = 0
+
+        if (options.size != null) options.width = options.height = options.size
+        if (options.padding != null) options.top = options.left = options.right = options.bottom = options.padding
+
+        if (options.width != null) {
+            width = options.width
+
+            if (options.left != null) {
+                x = options.left
+            } else if (options.right != null) {
+                x = this.width - options.right - options.width
+            } else {
+                x = (this.width - width) / 2
+            }
+        } else {
+            if (options.left != null && options.right != null) {
+                x = options.left
+                width = this.width - x - options.right
+            } else if (options.left != null) {
+                x = options.left
+                width = this.width - x
+            } else if (options.right != null) {
+                width = this.width - options.right
+                x = 0
+            }
+        }
+
+        if (options.height != null) {
+            height = options.height
+
+            if (options.top != null) {
+                y = options.top
+            } else if (options.bottom != null) {
+                y = this.height - options.bottom - options.height
+            } else {
+                y = (this.height - height) / 2
+            }
+        } else {
+            if (options.top != null && options.bottom != null) {
+                y = options.top
+                height = this.height - y - options.bottom
+            } else if (options.top != null) {
+                y = options.top
+                height = this.height - y
+            } else if (options.bottom != null) {
+                height = this.height - options.bottom
+                y = 0
+            }
+        }
+
+        return new Rect(x, y, width, height)
     }
 
     static extends(center: Point, size: Point) {
