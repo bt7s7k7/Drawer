@@ -88,6 +88,10 @@ export class Point {
         return this.x * this.y
     }
 
+    equals(other: { x: number, y: number }) {
+        return this.x == other.x && this.y == other.y
+    }
+
     static dot(a: Point, b: Point) {
         return a.x * b.x + a.y * b.y
     }
