@@ -120,15 +120,22 @@ export class DrawerInput extends Disposable {
         if (event.target?.tagName?.toLowerCase() == "input" || event.target?.tagName?.toLowerCase() == "textarea") return
 
         const key = this.keyboard.key(event.code as KeyCode)
+        const text = (
+            (event.ctrlKey ? "Ctrl+" : "") +
+            (event.altKey ? "Alt+" : "") +
+            event.key
+        )
 
         if (type == "down") {
             key.down = true
             key.onDown.emit()
+            this.keyboard.onDown.emit({ key, text })
         }
 
         if (type == "up") {
             key.down = false
             key.onUp.emit()
+            this.keyboard.onUp.emit({ key, text })
         }
     }
 
@@ -254,15 +261,12 @@ export namespace DrawerInput {
     }
 
     export class Keyboard extends EventListener {
-        public readonly onDown = new EventEmitter<{ key: Key }>()
-        public readonly onUp = new EventEmitter<{ key: Key }>()
+        public readonly onDown = new EventEmitter<{ key: Key, text: string }>()
+        public readonly onUp = new EventEmitter<{ key: Key, text: string }>()
 
         public key(code: KeyCode) {
             if (!(code in this[KEYS])) {
-                const key = this[KEYS][code] = new Key(code)
-
-                key.onDown.add(this, () => this.onDown.emit({ key }))
-                key.onUp.add(this, () => this.onUp.emit({ key }))
+                this[KEYS][code] = new Key(code)
             }
             return this[KEYS][code]
         }
