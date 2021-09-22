@@ -131,6 +131,14 @@ export class Point {
         return new Point(Math.max(a.x, b.x), Math.max(a.y, b.y),)
     }
 
+    static dist(a: Point, b: Point) {
+        return Math.hypot(a.x - b.x, a.y - b.y)
+    }
+
+    static distSqr(a: Point, b: Point) {
+        return (a.x - b.x) ** 2 + (a.y - b.y) ** 2
+    }
+
     /** [1, 1] */
     static readonly one = new Point(1, 1)
     /** [0, 0] */
