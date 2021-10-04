@@ -222,6 +222,26 @@ export class Rect {
         return new Rect(x, y, width, height)
     }
 
+    aspectRatio(ratio: number, center = false) {
+        if (ratio > 1) {
+            const width = this.height / ratio
+            if (width > this.width) {
+                const widthRatio = this.width / width
+                const height = this.height * widthRatio
+                return new Rect(0, 0, width * widthRatio, height)
+            }
+            return new Rect(0, 0, width, this.height)
+        } else {
+            const height = this.width / ratio
+            if (height > this.height) {
+                const widthRatio = this.height / height
+                const width = this.width * widthRatio
+                return new Rect(0, 0, width, height * widthRatio)
+            }
+            return new Rect(0, 0, this.width, height)
+        }
+    }
+
     static extends(center: Point, size: Point) {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
