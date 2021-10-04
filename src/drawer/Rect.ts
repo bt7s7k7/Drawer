@@ -111,8 +111,12 @@ export class Rect {
         return otherEnd.x >= this.x && otherEnd.y >= this.y && other.x <= thisEnd.x && other.y <= thisEnd.y
     }
 
-    equals(other: Rect) {
+    equals(other: { x: number, y: number, width: number, height: number }) {
         return this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height
+    }
+
+    sizeEquals(other: { width: number, height: number }) {
+        return this.width == other.width && this.height == other.height
     }
 
     awayVector(point: Point) {
