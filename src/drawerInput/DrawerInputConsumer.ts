@@ -1,12 +1,15 @@
 import { ClientEventListener } from "../eventLib/ClientEventListener"
+import { IDisposable } from "../eventLib/Disposable"
 import { DrawerInput } from "./DrawerInput"
 
-export function defineDrawerInputConsumer(callback: (self: ClientEventListener, drawerInput: DrawerInput) => void) {
+export function defineDrawerInputConsumer(callback: (self: ClientEventListener, drawerInput: DrawerInput) => (IDisposable | void)) {
     return {
         create(drawerInput: DrawerInput) {
             const eventListener = new ClientEventListener()
 
-            callback(eventListener, drawerInput)
+            const ret = callback(eventListener, drawerInput)
+
+            if (ret) eventListener.guard(ret)
 
             return eventListener
         }
