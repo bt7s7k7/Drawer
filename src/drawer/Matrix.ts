@@ -7,7 +7,7 @@ export class Matrix {
     public translate(offset: { x: number, y: number }): Matrix
     public translate() {
         const x = arguments.length == 2 ? arguments[0] : arguments[0].x
-        const y = arguments.length == 2 ? arguments[1] : arguments[0].x
+        const y = arguments.length == 2 ? arguments[1] : arguments[0].y
 
         return new Matrix(
             this.m11, this.m21, this.m31 + x,
