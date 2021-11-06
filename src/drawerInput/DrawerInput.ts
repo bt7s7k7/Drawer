@@ -183,6 +183,11 @@ export class DrawerInput extends Disposable {
         }
     }
 
+    public processWheelEvent(event: WheelEvent) {
+        const delta = new Point(event.deltaX, event.deltaY)
+        this.mouse.onWheel.emit({ delta })
+    }
+
     public transformTouchPos: null | ((point: Point, size: Point) => Point) = null
 
     constructor(
@@ -207,6 +212,7 @@ export namespace DrawerInput {
         public lastPos = new Point()
         /** Triggers when the mouse moves */
         public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
+        public readonly onWheel = new EventEmitter<{ delta: Point }>()
     }
 
     export class MouseButton extends Disposable {
