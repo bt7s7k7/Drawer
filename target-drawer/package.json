@@ -1,0 +1,10 @@
+{
+    "name": "@bt7s7k7/drawer",
+    "version": "1.0.2",
+    "description": "Simple JS canvas drawing and vector math library",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "repository": "https://github.com/bt7s7k7/Drawer",
+    "author": "bt7s7k7",
+    "license": "MIT"
+}

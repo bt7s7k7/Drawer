@@ -19,7 +19,10 @@
             "dom",
             "dom.iterable",
             "scripthost"
-        ]
+        ],
+        "outDir": "lib",
+        "declaration": true,
+        "emitDeclarationOnly": true
     },
     "include": [
         "src/**/*.ts",

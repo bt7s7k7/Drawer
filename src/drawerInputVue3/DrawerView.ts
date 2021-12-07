@@ -1,4 +1,4 @@
-import { defineComponent, markRaw, onMounted, onUnmounted, PropType, ref, watch } from "vue"
+import { defineComponent, h, markRaw, onMounted, onUnmounted, PropType, ref, watch } from "vue"
 import { Drawer } from "../drawer/Drawer"
 import { DrawerInput } from "../drawerInput/DrawerInput"
 import { DrawerInputConsumer } from "../drawerInput/DrawerInputConsumer"
@@ -71,15 +71,15 @@ export const DrawerView = defineComponent({
         }, { immediate: true })
 
         return () => (
-            <canvas
-                ref={canvas}
-                onMousemove={event => props.drawerInput?.processMouseInput(drawer.value!, "move", event)}
-                onMousedown={event => props.drawerInput?.processMouseInput(drawer.value!, "down", event)}
-                onMouseup={event => props.drawerInput?.processMouseInput(drawer.value!, "up", event)}
-                onMouseleave={event => props.drawerInput?.processMouseInput(drawer.value!, "leave", event)}
-                onContextmenu={event => event.preventDefault()}
-                onWheel={event => props.drawerInput?.processWheelEvent(event)}
-            ></canvas>
+            h("canvas", {
+                ref: canvas,
+                onMousemove: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "move", event),
+                onMousedown: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "down", event),
+                onMouseup: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "up", event),
+                onMouseleave: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "leave", event),
+                onContextmenu: (event: any) => event.preventDefault(),
+                onWheel: (event: any) => props.drawerInput?.processWheelEvent(event),
+            })
         )
     }
 })

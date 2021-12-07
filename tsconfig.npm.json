@@ -1,0 +1,16 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        "node_modules",
+        "src/drawerInputVue3",
+        "src/drawerInputVue",
+        "src/drawerInput",
+        "src/main.ts",
+        "src/eventLib",
+        "src/drawer-viewer",
+        "src/index-input.ts"
+    ],
+    "compilerOptions": {
+        "outDir": "./target-drawer/lib"
+    }
+}

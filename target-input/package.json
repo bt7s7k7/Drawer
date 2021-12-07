@@ -1,0 +1,14 @@
+{
+    "name": "@bt7s7k7/drawer-input",
+    "version": "1.0.1",
+    "description": "Vue 3 wrapper for @bt7s7k7/drawer",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "repository": "https://github.com/bt7s7k7/Drawer",
+    "author": "bt7s7k7",
+    "license": "MIT",
+    "dependencies": {
+        "@bt7s7k7/drawer": "^1.0.2",
+        "@bt7s7k7/eventlib": "^1.0.0"
+    }
+}
