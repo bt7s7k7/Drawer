@@ -84,8 +84,21 @@ export class Drawer {
             const lineHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent
             lines.forEach((v, i) => {
                 let linePos = pos.add(0, lineHeight * i)
-
+                if (sizeOrOptions.outline) {
+                    if (typeof sizeOrOptions.outline == "function") {
+                        sizeOrOptions.outline({
+                            metrics: this.ctx.measureText(v),
+                            origin: linePos,
+                            size: +size.slice(0, -2),
+                            align: this.ctx.textAlign,
+                            baseline: this.ctx.textBaseline
+                        })
+                    } else {
+                        this.ctx.strokeText(v, ...linePos.spread())
+                    }
+                }
                 this.ctx.fillText(v, ...linePos.spread())
+
             })
 
             return this
@@ -284,5 +297,14 @@ export namespace Drawer {
         size?: string | number
         align?: CanvasTextAlign
         baseline?: CanvasTextBaseline
+        outline?: boolean | ((options: TextRenderingMetrics) => void)
+    }
+
+    export interface TextRenderingMetrics {
+        origin: Point
+        metrics: TextMetrics
+        size: number
+        align: CanvasTextAlign
+        baseline: CanvasTextBaseline
     }
 }
