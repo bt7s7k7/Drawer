@@ -1,4 +1,5 @@
 import { Color } from "./Color"
+import { Matrix } from "./Matrix"
 import { Point } from "./Point"
 import { Rect } from "./Rect"
 
@@ -275,6 +276,15 @@ export class Drawer {
         } else {
             this.ctx.scale(scale.x, scale.y)
         }
+        return this
+    }
+
+    transform(matrix: Matrix) {
+        this.ctx.transform(
+            matrix.m11, matrix.m12,
+            matrix.m21, matrix.m22,
+            matrix.m31, matrix.m32
+        )
         return this
     }
 
