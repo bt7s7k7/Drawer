@@ -3,6 +3,12 @@ import { Matrix } from "./Matrix"
 import { Point } from "./Point"
 import { Rect } from "./Rect"
 
+type GlobalCompositeOperation =
+    "color" | "color-burn" | "color-dodge" | "copy" | "darken" | "destination-atop" | "destination-in" |
+    "destination-out" | "destination-over" | "difference" | "exclusion" | "hard-light" | "hue" | "lighten" |
+    "lighter" | "luminosity" | "multiply" | "overlay" | "saturation" | "screen" | "soft-light" |
+    "source-atop" | "source-in" | "source-out" | "source-over" | "xor"
+
 export class Drawer {
     public size = new Rect()
 
@@ -295,6 +301,11 @@ export class Drawer {
 
     setLineDashOffset(offset: number) {
         this.ctx.lineDashOffset = offset
+        return this
+    }
+
+    setGlobalCompositeOperation(operation: GlobalCompositeOperation | null) {
+        this.ctx.globalCompositeOperation = operation ?? "source-over"
         return this
     }
 }
