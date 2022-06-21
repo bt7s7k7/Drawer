@@ -320,6 +320,10 @@ export class Drawer {
         this.ctx.globalCompositeOperation = operation ?? "source-over"
         return this
     }
+
+    getImageData(source: Rect = this.size) {
+        return this.ctx.getImageData(source.x, source.y, source.width, source.height)
+    }
 }
 
 export namespace Drawer {
