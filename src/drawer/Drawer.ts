@@ -141,9 +141,11 @@ export class Drawer {
         return this
     }
 
-    matchSize(other: Drawer | Rect) {
-        if (!this.size.equals("width" in other ? other : other.size)) {
-            this.setSize("width" in other ? other : other.size)
+    matchSize(other: Drawer | { width: number, height: number }) {
+        const size = "width" in other ? (other instanceof Rect ? other : new Rect(0, 0, other.width, other.height)) : other.size
+
+        if (!this.size.equals(size)) {
+            this.setSize(size)
         }
 
         return this
