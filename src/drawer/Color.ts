@@ -84,7 +84,7 @@ export class Color {
     }
 
     public static fromHSL(h: number, s: number, l: number) {
-        var r, g, b
+        let r, g, b
 
         if (s == 0) {
             r = g = b = l
