@@ -247,9 +247,19 @@ export class Drawer {
 
     blit(image: CanvasImageSource | Drawer): Drawer
     blit(image: CanvasImageSource | Drawer, dest: Point): Drawer
+    blit(image: ImageData, dest?: Point): Drawer
     blit(image: CanvasImageSource | Drawer, dest: Rect): Drawer
     blit(image: CanvasImageSource | Drawer, dest: Rect, source: Rect): Drawer
-    blit(image: CanvasImageSource | Drawer, dest: Rect | Point | null = null, source: Rect | null = null) {
+    blit(image: CanvasImageSource | Drawer | ImageData, dest: Rect | Point | null = null, source: Rect | null = null) {
+        if (image instanceof ImageData) {
+            if (dest) {
+                this.ctx.putImageData(image, dest!.x, dest!.y)
+            } else {
+                this.ctx.putImageData(image, 0, 0)
+            }
+            return this
+        }
+
         const realImage = image instanceof Drawer ? image.ctx.canvas : image
 
         if (!dest) {
