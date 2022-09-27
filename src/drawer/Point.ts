@@ -92,6 +92,10 @@ export class Point {
         return this.x == other.x && this.y == other.y
     }
 
+    with(axis: "x" | "y", value: number) {
+        return new Point({ ...this, [axis]: value })
+    }
+
     static dot(a: Point, b: Point) {
         return a.x * b.x + a.y * b.y
     }
