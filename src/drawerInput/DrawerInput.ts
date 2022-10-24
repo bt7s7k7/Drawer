@@ -53,6 +53,12 @@ export class DrawerInput extends Disposable {
                 if (!button.dragging && button.downPos.dist(pos) > this.dragThreshold) {
                     button.dragging = true
                     button.onDragStart.emit({ pos: button.downPos })
+
+                    button.onDrag.emit({
+                        pos,
+                        delta: pos.add(button.downPos.mul(-1)),
+                        lastPos: button.downPos
+                    })
                 }
 
                 if (button.dragging) {
