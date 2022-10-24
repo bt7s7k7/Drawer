@@ -12,7 +12,8 @@ export const DrawerView = defineComponent({
         },
         consumer: {
             type: Object as PropType<DrawerInputConsumer.Builder>
-        }
+        },
+        allowContextMenu: { type: Boolean }
     },
     setup(props, ctx) {
         const canvas = ref<HTMLCanvasElement>(null!)
@@ -36,6 +37,9 @@ export const DrawerView = defineComponent({
             const touchend = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "end", event)
             const touchmove = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "move", event)
 
+            const mouseMove = (event: MouseEvent) => (props.drawerInput.mouse.over || props.drawerInput.mouse.any.down) && props.drawerInput?.processMouseInput(drawer.value!, "move", event, false)
+            const mouseUp = (event: MouseEvent) => props.drawerInput?.processMouseInput(drawer.value!, "up", event, false)
+
             window.addEventListener("keydown", keyDown)
             window.addEventListener("keyup", keyUp)
             window.addEventListener("resize", resize)
@@ -45,6 +49,8 @@ export const DrawerView = defineComponent({
             window.addEventListener("touchcancel", touchend)
             window.addEventListener("touchmove", touchmove)
 
+            window.addEventListener("mousemove", mouseMove)
+            window.addEventListener("mouseup", mouseUp)
 
             onUnmounted(() => {
                 cancelAnimationFrame(rafId)
@@ -56,6 +62,9 @@ export const DrawerView = defineComponent({
                 window.removeEventListener("touchend", touchend)
                 window.removeEventListener("touchcancel", touchend)
                 window.removeEventListener("touchmove", touchmove)
+
+                window.removeEventListener("mousemove", mouseMove)
+                window.removeEventListener("mouseup", mouseUp)
             })
         })
 
@@ -73,11 +82,12 @@ export const DrawerView = defineComponent({
         return () => (
             h("canvas", {
                 ref: canvas,
-                onMousemove: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "move", event),
+                //onMousemove: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "move", event),
                 onMousedown: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "down", event),
-                onMouseup: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "up", event),
+                //onMouseup: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "up", event),
                 onMouseleave: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "leave", event),
-                onContextmenu: (event: any) => event.preventDefault(),
+                onMouseenter: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "enter", event),
+                onContextmenu: props.allowContextMenu ? undefined : (event: any) => event.preventDefault(),
                 onWheel: (event: any) => props.drawerInput?.processWheelEvent(event),
             })
         )

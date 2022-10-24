@@ -33,12 +33,27 @@ export class DrawerInput extends Disposable {
     public deltaTime = 0
     public readonly onResize = new EventEmitter()
 
-    public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave", event: MouseEvent) {
-        (document.activeElement as HTMLElement)?.blur?.()
+    public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave" | "enter", event: MouseEvent, local = true) {
         this.drawer = drawer
-        const pos = type == "leave" ? new Point(NaN, NaN) : new Point(event.offsetX, event.offsetY)
-        if (type == "leave") this.mouse.over = false
-        else this.mouse.over = true
+
+        if (type == "leave") {
+            this.mouse.over = false
+            return
+        }
+
+        if (type == "enter") {
+            this.mouse.over = true
+            void (document.activeElement as HTMLElement)?.blur?.()
+            return
+        }
+
+        let pos
+        if (local) {
+            pos = new Point(event.offsetX, event.offsetY)
+        } else {
+            const boundingRect = drawer.ctx.canvas.getBoundingClientRect()
+            pos = new Point(event.pageX - boundingRect.x, event.pageY - boundingRect.y)
+        }
 
         const lastPos = this.mouse.pos
         this.mouse.pos = pos
@@ -80,12 +95,12 @@ export class DrawerInput extends Disposable {
                 }
             }
 
-            if (type == "leave") {
+            /* if (type == "leave") {
                 button.down = false
                 button.onUp.emit({ pos })
                 if (button.dragging) button.onDragEnd.emit({ pos })
                 button.dragging = false
-            }
+            } */
         }
     }
 
