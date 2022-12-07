@@ -313,6 +313,11 @@ export namespace DrawerInput {
     export class Key extends Disposable {
         public down = false
         public lastDown = false
+        
+        public pressed() {
+            return this.down && !this.lastDown
+        }
+
         public readonly onDown = new EventEmitter<void>()
         public readonly onUp = new EventEmitter<void>()
 
