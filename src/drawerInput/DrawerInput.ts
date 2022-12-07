@@ -125,6 +125,7 @@ export class DrawerInput extends Disposable {
         this.onDraw.emit({ deltaTime: actualDeltaTime })
 
         this.mouse.lastPos = this.mouse.pos
+        this.mouse.wheelDelta = Point.zero
 
         for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right, this.mouse.any]) {
             button.lastDown = button.down
@@ -206,6 +207,7 @@ export class DrawerInput extends Disposable {
 
     public processWheelEvent(event: WheelEvent) {
         const delta = new Point(event.deltaX, event.deltaY)
+        this.mouse.wheelDelta = delta
         this.mouse.onWheel.emit({ delta })
     }
 
@@ -233,6 +235,7 @@ export namespace DrawerInput {
         public lastPos = new Point()
         /** Triggers when the mouse moves */
         public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
+        public wheelDelta = Point.zero
         public readonly onWheel = new EventEmitter<{ delta: Point }>()
     }
 
