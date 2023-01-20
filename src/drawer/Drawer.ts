@@ -334,6 +334,10 @@ export class Drawer {
     getImageData(source: Rect = this.size) {
         return this.ctx.getImageData(source.x, source.y, source.width, source.height)
     }
+
+    makeEmptyImageData() {
+        return new ImageData(this.size.width, this.size.height)
+    }
 }
 
 export namespace Drawer {
