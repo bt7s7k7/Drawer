@@ -61,6 +61,12 @@ export class Point {
         return `${this.x}:${this.y}`
     }
 
+    hash() {
+        const t = this.x * 12.9898 + this.y * 78.233
+        const y = Math.sin(t) * 43758.5453
+        return y - Math.floor(y)
+    }
+
     dist(other: { x: number, y: number }) {
         return Math.hypot(this.x - other.x, this.y - other.y)
     }
