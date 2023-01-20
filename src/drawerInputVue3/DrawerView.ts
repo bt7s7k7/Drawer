@@ -13,6 +13,7 @@ export const DrawerView = defineComponent({
         consumer: {
             type: Object as PropType<DrawerInputConsumer.Builder>
         },
+        drawEvent: { type: String as PropType<"animation-frame" | "timer" | "disabled"> },
         allowContextMenu: { type: Boolean }
     },
     setup(props, ctx) {
@@ -20,14 +21,27 @@ export const DrawerView = defineComponent({
         const drawer = ref<Drawer>()
 
         onMounted(() => {
-            let rafId = 0
+            let timerID = 0
             drawer.value = markRaw(new Drawer(canvas.value.getContext("2d")!))
 
-            const update = () => {
+            if (props.drawEvent == "animation-frame" || props.drawEvent == undefined) {
+                const update = () => {
+                    props.drawerInput?.processDrawEvent(drawer.value!, null)
+                    timerID = requestAnimationFrame(update)
+                }
+                update()
+            } else if (props.drawEvent == "timer") {
+                timerID = setInterval(() => {
+                    try {
+                        props.drawerInput?.processDrawEvent(drawer.value!, null)
+                    } catch (err) {
+                        clearInterval(timerID)
+                        throw err
+                    }
+                }, 17)
+            } else if (props.drawEvent == "disabled") {
                 props.drawerInput?.processDrawEvent(drawer.value!, null)
-                rafId = requestAnimationFrame(update)
             }
-            update()
 
             const keyDown = (event: KeyboardEvent) => props.drawerInput?.processKeyboardEvent(drawer.value!, "down", event)
             const keyUp = (event: KeyboardEvent) => props.drawerInput?.processKeyboardEvent(drawer.value!, "up", event)
@@ -53,7 +67,11 @@ export const DrawerView = defineComponent({
             window.addEventListener("mouseup", mouseUp)
 
             onUnmounted(() => {
-                cancelAnimationFrame(rafId)
+                if (props.drawEvent == "animation-frame" || props.drawEvent == undefined) {
+                    cancelAnimationFrame(timerID)
+                } else if (props.drawEvent == "timer") {
+                    clearInterval(timerID)
+                }
                 window.removeEventListener("keydown", keyDown)
                 window.removeEventListener("keyup", keyUp)
                 window.removeEventListener("resize", resize)
@@ -69,7 +87,9 @@ export const DrawerView = defineComponent({
         })
 
         let prevConsumer: DrawerInputConsumer | null = null
-        onUnmounted(() => prevConsumer?.dispose())
+        onUnmounted(() => {
+            prevConsumer?.dispose()
+        })
 
         watch(() => props.consumer, (newConsumer) => {
             prevConsumer?.dispose()
