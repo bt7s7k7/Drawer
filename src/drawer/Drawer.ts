@@ -166,6 +166,11 @@ export class Drawer {
         return this
     }
 
+    closePath() {
+        this.ctx.closePath()
+        return this
+    }
+
     /** Adds an arc to a path */
     arc(pos: Point, radius: number, startAngle = 0, endAngle = Math.PI * 2, anticlockwise = false) {
         this.ctx.arc(pos.x, pos.y, radius, startAngle, endAngle, anticlockwise)
