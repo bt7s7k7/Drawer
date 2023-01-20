@@ -275,6 +275,11 @@ export namespace DrawerInput {
             return !this.down && this.lastDown
         }
 
+        /** Was this button released between this and last frame and was not dragging */
+        public clicked() {
+            return !this.down && this.lastDown && !this.lastDragging
+        }
+
         /** Started this button dragging between this and last frame */
         public dragStart() {
             return this.dragging && !this.lastDragging
@@ -313,7 +318,7 @@ export namespace DrawerInput {
     export class Key extends Disposable {
         public down = false
         public lastDown = false
-        
+
         public pressed() {
             return this.down && !this.lastDown
         }
