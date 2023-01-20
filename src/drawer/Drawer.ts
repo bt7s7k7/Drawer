@@ -40,6 +40,16 @@ export class Drawer {
         return this
     }
 
+    setStrokeDash(segments: number[]) {
+        this.ctx.setLineDash(segments)
+        return this
+    }
+
+    setStrokeDashOffset(offset: number) {
+        this.ctx.lineDashOffset = offset
+        return this
+    }
+
     fillRect(rect: Rect = this.size) {
         this.ctx.fillRect(...rect.spread())
         return this
