@@ -189,6 +189,11 @@ export class Drawer {
         return this
     }
 
+    bezierTo(cp1: Point, cp2: Point, pos: Point) {
+        this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, pos.x, pos.y)
+        return this
+    }
+
     /** Strokes the path */
     stroke(path?: Path2D) {
         if (path) {
