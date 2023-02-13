@@ -224,7 +224,7 @@ export class Drawer {
     }
 
     /** Sets a linear gradient as a style */
-    setLinearGradient(start: Point, end: Point, stops: [number, string][]) {
+    setLinearGradient(start: Point, end: Point, stops: readonly (readonly [number, string])[]) {
         let gradient = this.ctx.createLinearGradient(start.x, start.y, end.x, end.y)
         stops.forEach(v => gradient.addColorStop(v[0], v[1]))
         this.setStyle(gradient)
