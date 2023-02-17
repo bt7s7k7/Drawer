@@ -104,6 +104,13 @@ export class Matrix {
         return new Point(x, y)
     }
 
+    public transformRect(rect: Rect) {
+        const start = this.transform(rect.pos())
+        const end = this.transform(rect.end())
+
+        return new Rect(start, end.add(start.mul(-1)))
+    }
+
     public transformWithContext(point: Point, context: Rect) {
         return this.transform(point.antiScale(context.size())).scale(context.size())
     }
