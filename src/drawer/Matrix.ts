@@ -156,4 +156,16 @@ export class Matrix {
     ) { }
 
     public static readonly identity = new Matrix()
+
+    public static fromDOMMatrix(source: Record<
+        "a" | "b" | "c" |
+        "d" | "e" | "f",
+        number
+    >) {
+        return new Matrix(
+            source.a, source.c, source.e,
+            source.b, source.d, source.f,
+            0, 0, 1
+        )
+    }
 }
