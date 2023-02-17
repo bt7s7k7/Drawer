@@ -246,6 +246,10 @@ export class Rect {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
 
+    static fromDOMRect(input: { top: number, left: number, width: number, height: number }) {
+        return new Rect(input.left, input.top, input.width, input.height)
+    }
+
     public static one = new Rect(0, 0, 1, 1)
     public static zero = new Rect(0, 0, 0, 0)
 }
