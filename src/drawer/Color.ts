@@ -32,9 +32,9 @@ export class Color {
 
     public toHex() {
         return "#"
-            + Math.floor(this.r * 255).toString(16).padStart(2, "0")
-            + Math.floor(this.g * 255).toString(16).padStart(2, "0")
-            + Math.floor(this.b * 255).toString(16).padStart(2, "0")
+            + Math.min(255, Math.floor(this.r * 255)).toString(16).padStart(2, "0")
+            + Math.min(255, Math.floor(this.g * 255)).toString(16).padStart(2, "0")
+            + Math.min(255, Math.floor(this.b * 255)).toString(16).padStart(2, "0")
     }
 
     public readonly r: number
