@@ -11,9 +11,16 @@ type GlobalCompositeOperation =
 
 export class Drawer {
     public size = new Rect()
+    public fragile = false
 
-    constructor(public ctx: CanvasRenderingContext2D = document.createElement("canvas").getContext("2d")!, protected readonly fragile: "fragile" | boolean = false) {
-        if (!fragile) {
+    constructor(public ctx: CanvasRenderingContext2D = Drawer.CONTEXT_FACTORY(), options?: { fragile?: boolean } | "fragile") {
+        if (options == "fragile") {
+            this.fragile = true
+        } else if (options) {
+            this.fragile = options.fragile ?? false
+        }
+
+        if (!this.fragile) {
             this.setNativeSize()
         } else {
             this.size = new Rect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -127,7 +134,10 @@ export class Drawer {
         if (this.fragile) throw new Error("Cannot set size of fragile canvas")
 
         const canvas = this.ctx.canvas
-        const size = new Rect(0, 0, canvas.scrollWidth, canvas.scrollHeight)
+        const size = new Rect(0, 0,
+            "scrollWidth" in canvas ? canvas.scrollWidth : (canvas as any).width,
+            "scrollHeight" in canvas ? canvas.scrollHeight : (canvas as any).height,
+        )
         this.setSize(size)
 
         return this
@@ -348,6 +358,8 @@ export class Drawer {
     makeEmptyImageData() {
         return new ImageData(this.size.width, this.size.height)
     }
+
+    public static CONTEXT_FACTORY = () => document.createElement("canvas").getContext("2d")!
 }
 
 export namespace Drawer {
