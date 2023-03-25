@@ -30,6 +30,10 @@ export class Color {
         return new Color(this.r, this.g, this.b, opacity)
     }
 
+    public toGreyscale() {
+        return (this.r + this.g + this.b) / 3
+    }
+
     public toHex() {
         return "#"
             + Math.min(255, Math.floor(this.r * 255)).toString(16).padStart(2, "0")
