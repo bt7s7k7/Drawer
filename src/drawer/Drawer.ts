@@ -359,6 +359,10 @@ export class Drawer {
         return new ImageData(this.size.width, this.size.height)
     }
 
+    setImageSmoothing(value: boolean) {
+        this.ctx.imageSmoothingEnabled = value
+    }
+
     public static CONTEXT_FACTORY = () => document.createElement("canvas").getContext("2d")!
 }
 
