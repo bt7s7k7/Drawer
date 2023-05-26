@@ -384,4 +384,62 @@ export namespace Drawer {
         align: CanvasTextAlign
         baseline: CanvasTextBaseline
     }
+
+    export class Camera {
+        public offset
+        public scale
+        public shouldCenterView
+
+        public worldToScreen = Matrix.identity
+        public screenToWorld = Matrix.identity
+
+        public updateViewport(size: Rect): void
+        public updateViewport(drawer: Drawer): void
+        public updateViewport(size: Rect | Drawer): void
+        public updateViewport(size: Rect | Drawer) {
+            if (size instanceof Drawer) size = size.size
+            const pos = this.shouldCenterView ? this.offset.add(size.center()) : this.offset
+
+            this.worldToScreen = Matrix.identity
+                .scale(this.scale)
+                .translate(pos)
+
+            this.screenToWorld = Matrix.identity
+                .translate(pos.mul(-1))
+                .scale(1 / this.scale)
+        }
+
+        /**
+         * Sets drawer transformation based on camera data, don't forget 
+         * to reset the transform using `Drawer.restore()`.
+         **/
+        public pushTransform(drawer: Drawer) {
+            drawer.save()
+            drawer.transform(this.worldToScreen)
+        }
+
+        public translate(offset: Point) {
+            this.offset = this.offset.add(offset)
+        }
+
+        /** Zooms in such a way the movement will be centered on a point,
+         * for example a mouse position. If this function is not desired,
+         * simply change the scale property. */
+        public zoomViewport(newScale: number, center: Point, viewport: Rect | Drawer) {
+            const centerWorld = this.screenToWorld.transform(center)
+            this.scale = newScale
+            this.updateViewport(viewport)
+            const newCenter = this.worldToScreen.transform(centerWorld)
+            const correction = center.add(newCenter.mul(-1))
+            this.offset = this.offset.add(correction)
+        }
+
+        constructor(
+            { pos = Point.zero, scale = 1, shouldCenterView = false } = {}
+        ) {
+            this.offset = pos
+            this.scale = scale
+            this.shouldCenterView = shouldCenterView
+        }
+    }
 }
