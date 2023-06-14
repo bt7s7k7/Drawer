@@ -50,6 +50,10 @@ export class Point {
         return new Point(this.x * amount, this.y * amount)
     }
 
+    pow(amount: number) {
+        return new Point(this.x ** amount, this.y ** amount)
+    }
+
     add(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x + other.x, this.y + other.y)
