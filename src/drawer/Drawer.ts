@@ -275,12 +275,12 @@ export class Drawer {
         return this
     }
 
-    blit(image: CanvasImageSource | Drawer): Drawer
-    blit(image: CanvasImageSource | Drawer, dest: Point): Drawer
+    blit(image: Drawer.ImageSource): Drawer
+    blit(image: Drawer.ImageSource, dest: Point): Drawer
     blit(image: ImageData, dest?: Point): Drawer
-    blit(image: CanvasImageSource | Drawer, dest: Rect): Drawer
-    blit(image: CanvasImageSource | Drawer, dest: Rect, source: Rect): Drawer
-    blit(image: CanvasImageSource | Drawer | ImageData, dest: Rect | Point | null = null, source: Rect | null = null) {
+    blit(image: Drawer.ImageSource, dest: Rect): Drawer
+    blit(image: Drawer.ImageSource, dest: Rect, source: Rect): Drawer
+    blit(image: Drawer.ImageSource | ImageData, dest: Rect | Point | null = null, source: Rect | null = null) {
         if (image instanceof ImageData) {
             if (dest) {
                 this.ctx.putImageData(image, dest!.x, dest!.y)
@@ -368,6 +368,7 @@ export class Drawer {
 
 export namespace Drawer {
     export type Style = CanvasRenderingContext2D["fillStyle"] | Color
+    export type ImageSource = CanvasImageSource | Drawer
 
     export interface TextOptions {
         font?: string
