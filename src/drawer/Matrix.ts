@@ -2,7 +2,6 @@ import { Point } from "./Point"
 import { Rect } from "./Rect"
 
 export class Matrix {
-
     public translate(x: number, y: number): Matrix
     public translate(offset: { x: number, y: number }): Matrix
     public translate() {
@@ -95,6 +94,27 @@ export class Matrix {
         const v31 = this.m31
         const v32 = this.m32
         const v33 = this.m33
+
+        const w = (v13 + v23 + v33)
+
+        const x = (v11 + v21 + v31) / w
+        const y = (v12 + v22 + v32) / w
+
+        return new Point(x, y)
+    }
+
+    public transformVector(point: Point) {
+        const v11 = point.x * this.m11
+        const v12 = point.x * this.m12
+        const v13 = point.x * this.m13
+
+        const v21 = point.y * this.m21
+        const v22 = point.y * this.m22
+        const v23 = point.y * this.m23
+
+        const v31 = 0
+        const v32 = 0
+        const v33 = 1
 
         const w = (v13 + v23 + v33)
 
