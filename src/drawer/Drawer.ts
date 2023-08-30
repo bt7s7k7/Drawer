@@ -187,6 +187,12 @@ export class Drawer {
         return this
     }
 
+    /** Adds an arc to a path */
+    ellipse(pos: Point, radius: Point, rotation = 0, startAngle = 0, endAngle = Math.PI * 2, anticlockwise = false) {
+        this.ctx.ellipse(pos.x, pos.y, radius.x, radius.y, rotation, startAngle, endAngle, anticlockwise)
+        return this
+    }
+
     /** Moves the current path position */
     move(pos: Point) {
         this.ctx.moveTo(pos.x, pos.y)
