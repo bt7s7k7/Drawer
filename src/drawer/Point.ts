@@ -3,9 +3,17 @@ export class Point {
         return new Point(Math.floor(this.x), Math.floor(this.y))
     }
 
+    ceil() {
+        return new Point(Math.ceil(this.x), Math.ceil(this.y))
+    }
+
     normalize() {
         if (this.x == 0 && this.y == 0) return Point.zero
         return this.mul(1 / Math.hypot(this.x, this.y))
+    }
+
+    tangent() {
+        return new Point(this.y, -this.x)
     }
 
     toAngle() {

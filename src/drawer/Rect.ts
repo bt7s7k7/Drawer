@@ -242,12 +242,44 @@ export class Rect {
         }
     }
 
+    min() {
+        return new Point(
+            Math.min(this.x, this.x + this.width),
+            Math.min(this.y, this.y + this.height)
+        )
+    }
+
+    max() {
+        return new Point(
+            Math.max(this.x, this.x + this.width),
+            Math.max(this.y, this.y + this.height)
+        )
+    }
+
     static extends(center: Point, size: Point) {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
 
     static fromDOMRect(input: { top: number, left: number, width: number, height: number }) {
         return new Rect(input.left, input.top, input.width, input.height)
+    }
+
+    static union(rects: Rect[]) {
+        let minX = Infinity
+        let minY = Infinity
+        let maxX = -Infinity
+        let maxY = -Infinity
+
+        for (const rect of rects) {
+            const min = rect.min()
+            if (minX > min.x) minX = min.x
+            if (minY > min.y) minY = min.y
+            const max = rect.max()
+            if (maxX < max.x) maxX = max.x
+            if (maxY < max.y) maxY = max.y
+        }
+
+        return new Rect(minX, minY, maxX - minX, maxY - minY)
     }
 
     public static one = new Rect(0, 0, 1, 1)
