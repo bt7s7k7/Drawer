@@ -79,6 +79,10 @@ export class Point {
         return this.x === 0 && this.y === 0
     }
 
+    isNaN() {
+        return isNaN(this.x) || isNaN(this.y)
+    }
+
     size() {
         return Math.hypot(this.x, this.y)
     }
@@ -165,5 +169,7 @@ export class Point {
     static readonly left = new Point(-1, 0)
     /** [1, 0] */
     static readonly right = new Point(1, 0)
+    /** [NaN, NaN] */
+    static readonly NaN = new Point(NaN, NaN)
     static readonly directions = [Point.up, Point.right, Point.down, Point.left]
 }
