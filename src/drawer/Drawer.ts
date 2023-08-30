@@ -392,6 +392,39 @@ export namespace Drawer {
         baseline: CanvasTextBaseline
     }
 
+    export type TestPatternType = "uv" | "missing-texture"
+
+    export function makeTestPattern(type: TestPatternType, target: Drawer | Point, colorA: Color | null = null, colorB: Color | null = null): Drawer {
+        if (target instanceof Point) target = new Drawer().setSize(target)
+
+        if (type == "missing-texture") {
+            colorA ??= Color.magenta
+            colorB ??= Color.black
+
+            const center = target.size.center()
+
+            target
+                .setStyle(colorB).fillRect()
+                .setStyle(colorA)
+                .fillRect(new Rect(Point.zero, center).floor())
+                .fillRect(new Rect(center, center).floor())
+        } else if (type == "uv") {
+            colorA ??= Color.red
+            colorB ??= Color.green
+
+            target
+                .setStyle(Color.black)
+                .fillRect()
+                .setGlobalCompositeOperation("lighten")
+                .setLinearGradient(Point.zero, new Point(target.size.width, 0), [[0, "#000000"], [1, colorA.toHex()]])
+                .fillRect()
+                .setLinearGradient(Point.zero, new Point(0, target.size.height), [[0, "#000000"], [1, colorB.toHex()]])
+                .fillRect()
+        }
+
+        return target
+    }
+
     export class Camera {
         public offset
         public scale
