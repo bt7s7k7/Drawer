@@ -369,6 +369,11 @@ export class Drawer {
         this.ctx.imageSmoothingEnabled = value
     }
 
+    use<T extends (ctx: Drawer, ...args: any) => void>(thunk: T, ...args: Parameters<T> extends [any, ...infer U] ? U : never) {
+        thunk(this, ...args)
+        return this
+    }
+
     public static CONTEXT_FACTORY = () => document.createElement("canvas").getContext("2d")!
 }
 
