@@ -28,6 +28,10 @@ export class Rect {
         return new Rect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.width), Math.floor(this.height))
     }
 
+    with(axis: "x" | "y" | "width" | "height", value: number) {
+        return new Rect({ ...this, [axis]: value })
+    }
+
     public readonly x: number
     public readonly y: number
 
