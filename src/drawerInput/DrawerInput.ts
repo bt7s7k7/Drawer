@@ -138,8 +138,8 @@ export class DrawerInput extends Disposable {
     }
 
     public processKeyboardEvent(drawer: Drawer, type: "up" | "down", event: KeyboardEvent) {
-        // @ts-ignore
-        if (event.target?.tagName?.toLowerCase() == "input" || event.target?.tagName?.toLowerCase() == "textarea") return
+        const target = event.target as HTMLElement
+        if (target && (target.tagName.toLowerCase() == "input" || target.tagName.toLowerCase() == "textarea") && !target.dataset.drawerInputIgnore) return
 
         const key = this.keyboard.key(event.code as KeyCode)
         const text = (
