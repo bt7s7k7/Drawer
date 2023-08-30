@@ -336,8 +336,8 @@ export class Drawer {
         return this
     }
 
-    setLineDash(dash: number[]) {
-        this.ctx.setLineDash(dash)
+    setLineDash(dash: number[] | null) {
+        this.ctx.setLineDash(dash ?? [])
         return this
     }
 
