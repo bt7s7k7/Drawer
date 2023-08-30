@@ -120,7 +120,8 @@ export class Point {
 
         return {
             length: dot,
-            point: () => start.add(direction.mul(dot))
+            point() { return start.add(direction.mul(this.length)) },
+            pointClamped(maxLength: number) { return start.add(direction.mul(this.length < 0 ? 0 : this.length > maxLength ? maxLength : this.length)) }
         }
     }
 
