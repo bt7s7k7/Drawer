@@ -377,6 +377,7 @@ export class Drawer {
 
     setImageSmoothing(value: boolean) {
         this.ctx.imageSmoothingEnabled = value
+        return this
     }
 
     use<T extends (ctx: Drawer, ...args: any) => void>(thunk: T, ...args: Parameters<T> extends [any, ...infer U] ? U : never) {
