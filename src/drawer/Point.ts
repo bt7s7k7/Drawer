@@ -166,6 +166,17 @@ export class Point {
         return (a.x - b.x) ** 2 + (a.y - b.y) ** 2
     }
 
+    static calculateObjectFit(target: Point, container: Point, type: "contain" | "cover") {
+        const widthRatio = target.x / container.x
+        const heightRatio = target.y / container.y
+
+        if (type == "contain") {
+            return Math.min(1 / widthRatio, 1 / heightRatio)
+        } else {
+            return Math.max(1 / widthRatio, 1 / heightRatio)
+        }
+    }
+
     /** [1, 1] */
     static readonly one = new Point(1, 1)
     /** [0, 0] */
