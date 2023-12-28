@@ -352,6 +352,16 @@ export class Drawer {
         return this
     }
 
+    setLineCap(type: CanvasLineCap) {
+        this.ctx.lineCap = type
+        return this
+    }
+
+    setLineJoin(type: CanvasLineJoin) {
+        this.ctx.lineJoin = type
+        return this
+    }
+
     setGlobalCompositeOperation(operation: GlobalCompositeOperation | null) {
         this.ctx.globalCompositeOperation = operation ?? "source-over"
         return this
