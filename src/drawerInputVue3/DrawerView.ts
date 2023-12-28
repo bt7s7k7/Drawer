@@ -99,6 +99,11 @@ export const DrawerView = defineComponent({
             }
         }, { immediate: true })
 
+        function contextMenu(event: MouseEvent) {
+            if (!props.allowContextMenu) event.preventDefault()
+            props.drawerInput?.processMouseInput(drawer.value!, "context", event)
+        }
+
         return () => (
             h("canvas", {
                 ref: canvas,
@@ -107,7 +112,7 @@ export const DrawerView = defineComponent({
                 //onMouseup: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "up", event),
                 onMouseleave: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "leave", event),
                 onMouseenter: (event: any) => props.drawerInput?.processMouseInput(drawer.value!, "enter", event),
-                onContextmenu: props.allowContextMenu ? undefined : (event: any) => event.preventDefault(),
+                onContextmenu: contextMenu,
                 onWheel: (event: any) => props.drawerInput?.processWheelEvent(event),
             })
         )

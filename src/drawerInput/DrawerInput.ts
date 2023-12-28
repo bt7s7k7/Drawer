@@ -23,6 +23,7 @@ export class DrawerInput extends Disposable {
     public readonly mouse = new DrawerInput.Mouse()
     public readonly keyboard = new DrawerInput.Keyboard()
     public readonly touch = new DrawerInput.TouchSurface()
+    public readonly onContextMenu = new EventEmitter<{ pos: Point }>()
     /** Triggers every frame */
     public readonly onDraw = new EventEmitter<{ deltaTime: number }>()
     /** The drawer currently being used, only guaranteed to work in event handlers */
@@ -33,7 +34,7 @@ export class DrawerInput extends Disposable {
     public deltaTime = 0
     public readonly onResize = new EventEmitter()
 
-    public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave" | "enter", event: MouseEvent, local = true) {
+    public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave" | "enter" | "context", event: MouseEvent, local = true) {
         this.drawer = drawer
 
         if (type == "leave") {
@@ -60,6 +61,11 @@ export class DrawerInput extends Disposable {
         const delta = pos.add(lastPos.mul(-1))
 
         this.mouse.onMove.emit({ pos, lastPos, delta })
+
+        if (type == "context") {
+            this.onContextMenu.emit({ pos })
+            return
+        }
 
         for (const button of [this.mouse.left, this.mouse.middle, this.mouse.right, this.mouse.any]) {
             if (button.down) {
