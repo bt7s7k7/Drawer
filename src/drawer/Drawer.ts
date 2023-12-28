@@ -385,6 +385,10 @@ export class Drawer {
         return this
     }
 
+    public asPattern(repetition: "repeat" | "repeat-x" | "repeat-y" | "no-repeat" = "repeat") {
+        return this.ctx.createPattern(this.ctx.canvas, repetition)!
+    }
+
     public static CONTEXT_FACTORY = () => document.createElement("canvas").getContext("2d")!
 }
 
