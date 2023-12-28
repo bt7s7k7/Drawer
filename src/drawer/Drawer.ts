@@ -486,5 +486,7 @@ export namespace Drawer {
             this.scale = scale
             this.shouldCenterView = shouldCenterView
         }
+
+        public static readonly ZOOM_LEVELS = [1 / 50, 1 / 20, 1 / 10, 1 / 5, 1 / 2, 1, 2, 5, 10, 20, 50]
     }
 }

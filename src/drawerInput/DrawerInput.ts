@@ -19,7 +19,7 @@ export type KeyCode = "Backspace" | "Tab" | "Enter" | "ShiftLeft" | "ShiftRight"
     "Semicolon" | "Equal" | "Comma" | "Minus" | "Period" | "Slash" |
     "Backquote" | "BracketLeft" | "Backslash" | "BracketRight" | "Quote"
 
-export class DrawerInput extends Disposable {
+export class DrawerInput extends EventListener {
     public readonly mouse = new DrawerInput.Mouse()
     public readonly keyboard = new DrawerInput.Keyboard()
     public readonly touch = new DrawerInput.TouchSurface()
@@ -33,6 +33,47 @@ export class DrawerInput extends Disposable {
     /** Time elapsed since last frame */
     public deltaTime = 0
     public readonly onResize = new EventEmitter()
+
+    public controlCamera(camera: Drawer.Camera, { listener = this as EventListener, zoom = true, translate = true, onUpdate = null as null | (() => void) } = {}) {
+        const ZOOM_LEVELS = Drawer.Camera.ZOOM_LEVELS
+        if (translate) {
+            this.mouse.middle.onDrag.add(listener, ({ delta }) => {
+                camera.translate(delta)
+                onUpdate?.()
+            })
+        }
+
+        const preformZoom = (delta: number) => {
+            if (!zoom) return
+            const level = ZOOM_LEVELS.findIndex(v => v >= camera.scale)
+            const newLevel = Math.max(0, Math.min(level + delta, ZOOM_LEVELS.length - 1))
+            camera.zoomViewport(ZOOM_LEVELS[newLevel], this.mouse.pos, this.drawer.size)
+            onUpdate?.()
+        }
+
+        this.mouse.onWheel.add(listener, ({ delta }) => {
+            if (this.keyboard.key("ControlLeft").down) {
+                preformZoom(delta.y)
+                return
+            }
+
+            if (translate) {
+                if (this.keyboard.key("ShiftLeft").down) {
+                    camera.translate(new Point(delta.y, delta.x))
+                    onUpdate?.()
+                    return
+                }
+
+                camera.translate(delta.mul(-1))
+                onUpdate?.()
+            }
+        })
+
+        if (zoom) {
+            this.keyboard.key("NumpadAdd").onDown.add(listener, () => preformZoom(1))
+            this.keyboard.key("NumpadSubtract").onDown.add(listener, () => preformZoom(-1))
+        }
+    }
 
     public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave" | "enter" | "context", event: MouseEvent, local = true) {
         this.drawer = drawer
