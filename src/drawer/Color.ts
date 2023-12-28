@@ -1,5 +1,5 @@
 export class Color {
-
+    /** Creates a CSS color value in the `rgba(r,b,g,a)` format */
     public toStyle() {
         return `rgba(${Math.floor(Math.max(Math.min(this.r, 1), 0) * 255)
             }, ${Math.floor(Math.max(Math.min(this.g, 1), 0) * 255)
@@ -34,6 +34,7 @@ export class Color {
         return (this.r + this.g + this.b) / 3
     }
 
+    /** Creates a CSS color value in the `#xxxxxx` format (alpha value is ignored, use `toStyle()`) */
     public toHex() {
         return "#"
             + Math.min(255, Math.floor(this.r * 255)).toString(16).padStart(2, "0")
