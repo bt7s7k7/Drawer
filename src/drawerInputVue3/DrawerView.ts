@@ -21,7 +21,7 @@ export const DrawerView = defineComponent({
         const drawer = ref<Drawer>()
 
         onMounted(() => {
-            let timerID = 0
+            let timerID = 0 as any
             drawer.value = markRaw(new Drawer(canvas.value.getContext("2d")!))
 
             if (props.drawEvent == "animation-frame" || props.drawEvent == undefined) {
