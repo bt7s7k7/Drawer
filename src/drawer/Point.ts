@@ -166,14 +166,20 @@ export class Point {
         return (a.x - b.x) ** 2 + (a.y - b.y) ** 2
     }
 
-    static calculateObjectFit(target: Point, container: Point, type: "contain" | "cover") {
+    static calculateObjectFit(target: Point, container: Point, type: "contain" | "cover" | "perfect") {
         const widthRatio = target.x / container.x
         const heightRatio = target.y / container.y
 
         if (type == "contain") {
             return Math.min(1 / widthRatio, 1 / heightRatio)
-        } else {
+        } else if (type == "cover") {
             return Math.max(1 / widthRatio, 1 / heightRatio)
+        } else {
+            if (widthRatio > 1 || heightRatio > 1) {
+                return Math.min(1 / widthRatio, 1 / heightRatio)
+            } else {
+                return Math.min(1 / widthRatio, 1 / heightRatio)
+            }
         }
     }
 
