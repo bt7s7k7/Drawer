@@ -446,9 +446,9 @@ export namespace Drawer {
     }
 
     export class Camera {
-        public offset
-        public scale
-        public shouldCenterView
+        public offset: Point
+        public scale: number
+        public shouldCenterView: boolean
 
         public worldToScreen = Matrix.identity
         public screenToWorld = Matrix.identity
