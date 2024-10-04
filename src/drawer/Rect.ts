@@ -268,17 +268,26 @@ export class Rect {
         return new Rect(input.left, input.top, input.width, input.height)
     }
 
-    static union(rects: Rect[]) {
+    static union(targets: (Rect | Point)[]) {
         let minX = Infinity
         let minY = Infinity
         let maxX = -Infinity
         let maxY = -Infinity
 
-        for (const rect of rects) {
-            const min = rect.min()
+        for (const target of targets) {
+            let min
+            let max
+
+            if ("min" in target) {
+                min = target.min()
+                max = target.max()
+            } else {
+                min = target
+                max = target
+            }
+
             if (minX > min.x) minX = min.x
             if (minY > min.y) minY = min.y
-            const max = rect.max()
             if (maxX < max.x) maxX = max.x
             if (maxY < max.y) maxY = max.y
         }
