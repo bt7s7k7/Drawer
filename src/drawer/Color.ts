@@ -42,6 +42,29 @@ export class Color {
             + Math.min(255, Math.floor(this.b * 255)).toString(16).padStart(2, "0")
     }
 
+    public toHSL() {
+        const { r, g, b } = this
+
+        const min = Math.min(r, g, b)
+        const max = Math.max(r, g, b)
+        const delta = max - min
+
+        let h = 0
+
+        if (delta == 0) h = 0
+        else if (max == r) h = ((g - b) / delta) % 6
+        else if (max == g) h = (b - r) / delta + 2
+        else h = (r - g) / delta + 4
+
+        h = h / 6
+        if (h < 0) h += 1
+
+        const l = (max + min) / 2
+        const s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1))
+
+        return { h, s, l }
+    }
+
     public readonly r: number
     public readonly g: number
     public readonly b: number
