@@ -117,14 +117,14 @@ export class DrawerInput extends EventListener {
                     button.onDragStart.emit({ pos: button.downPos })
 
                     button.onDrag.emit({
-                        pos,
+                        pos, start: button.downPos,
                         delta: pos.add(button.downPos.mul(-1)),
                         lastPos: button.downPos
                     })
                 }
 
                 if (button.dragging) {
-                    button.onDrag.emit({ pos, delta, lastPos })
+                    button.onDrag.emit({ pos, delta, lastPos, start: button.downPos })
                 }
             }
 
@@ -301,7 +301,7 @@ export namespace DrawerInput {
         /** Triggers when the mouse moves when this button is down. Only triggers
          *  after the mouse moves a distance from the origin to prevent triggering 
          *  during clicking, to trigger anyway use onMove */
-        public readonly onDrag = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
+        public readonly onDrag = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point, start: Point }>()
         /** Triggers when dragging starts
          *  @see {onDrag} */
         public readonly onDragStart = new EventEmitter<{ pos: Point }>()
