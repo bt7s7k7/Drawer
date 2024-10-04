@@ -3,6 +3,10 @@ export class Point {
         return new Point(Math.floor(this.x), Math.floor(this.y))
     }
 
+    makePixelPerfect() {
+        return new Point(Math.floor(this.x) + 0.5, Math.floor(this.y) + 0.5)
+    }
+
     ceil() {
         return new Point(Math.ceil(this.x), Math.ceil(this.y))
     }
