@@ -75,6 +75,15 @@ export class Point {
             return new Point(this.x + other, this.y + otherY)
     }
 
+    sub(other: { x: number, y: number }): Point
+    sub(x: number, y: number): Point
+    sub(other: { x: number, y: number } | number, otherY = 0) {
+        if (typeof other === "object")
+            return new Point(this.x - other.x, this.y - other.y)
+        else
+            return new Point(this.x - other, this.y - otherY)
+    }
+
     makeKey() {
         return `${this.x}:${this.y}`
     }
