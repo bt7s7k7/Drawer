@@ -93,6 +93,9 @@ export class Drawer {
 
             let font = sizeOrOptions.font ? sizeOrOptions.font : canvasStyle.fontFamily
             let fontStyle = `${size} ${font}`
+            if (sizeOrOptions.modifier) {
+                fontStyle = sizeOrOptions.modifier + " " + fontStyle
+            }
             this.ctx.font = fontStyle
 
 
@@ -402,6 +405,7 @@ export namespace Drawer {
         align?: CanvasTextAlign
         baseline?: CanvasTextBaseline
         outline?: boolean | ((options: TextRenderingMetrics) => void)
+        modifier?: "bold" | "italic" | "italic bold"
     }
 
     export interface TextRenderingMetrics {
