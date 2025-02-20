@@ -345,6 +345,15 @@ export class Drawer {
         return this
     }
 
+    overrideTransform(matrix: Matrix) {
+        this.ctx.setTransform(
+            matrix.m11, matrix.m12,
+            matrix.m21, matrix.m22,
+            matrix.m31, matrix.m32
+        )
+        return this
+    }
+
     setLineDash(dash: number[] | null) {
         this.ctx.setLineDash(dash ?? [])
         return this
@@ -480,6 +489,14 @@ export namespace Drawer {
         public pushTransform(drawer: Drawer) {
             drawer.save()
             drawer.transform(this.worldToScreen)
+        }
+
+        /**
+         * Overrides drawer transformation based on camera data.
+         **/
+        public overrideTransform(drawer: Drawer) {
+            drawer.save()
+            drawer.overrideTransform(this.worldToScreen)
         }
 
         public translate(offset: Point) {
