@@ -169,6 +169,7 @@ export class DrawerInput extends EventListener {
 
         this.mouse.delta = this.mouse.pos.add(this.mouse.lastPos.mul(-1))
 
+        this.deltaTime = actualDeltaTime
         this.onDraw.emit({ deltaTime: actualDeltaTime })
 
         this.mouse.lastPos = this.mouse.pos
