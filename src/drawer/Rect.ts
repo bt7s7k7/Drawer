@@ -149,6 +149,33 @@ export class Rect {
         )
     }
 
+    clampVector(vector: Point) {
+        let x2 = this.width * 0.5
+        let y2 = this.height * 0.5
+
+        let size = vector.size()
+        const direction = vector.mul(1 / size)
+
+        let right
+        if (direction.x > 0) {
+            right = new Point(x2, 0)
+        } else {
+            right = new Point(-x2, 0)
+        }
+
+        let down
+        if (direction.y > 0) {
+            down = new Point(0, y2)
+        } else {
+            down = new Point(0, -y2)
+        }
+
+        const [t1] = Point.getLineIntersectionScalars(Point.zero, direction, right, Point.down)
+        const [t2] = Point.getLineIntersectionScalars(Point.zero, direction, down, Point.right)
+
+        return direction.mul(Math.min(size, t1, t2))
+    }
+
     scale(rect: Rect) {
         return new Rect(this.x, this.y, this.width * rect.width, this.height * rect.height)
     }
