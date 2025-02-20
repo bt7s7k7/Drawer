@@ -100,6 +100,29 @@ export class Color {
     public static magenta = new Color(1, 0, 1)
     public static orange = new Color(1, 0.25, 0)
 
+    public static fromCSS(source: string) {
+        if (source.startsWith("rgb")) {
+            const [r, g, b] = source.slice(4, -1).split(",").map(v => +v)
+            return new Color(r / 255, g / 255, b / 255)
+        }
+
+        if (source.startsWith("rgba")) {
+            const [r, g, b, a] = source.slice(4, -1).split(",").map(v => +v)
+            return new Color(r / 255, g / 255, b / 255, a / 255)
+        }
+
+        if (source.startsWith("#")) {
+            return Color.fromHex(source)
+        }
+
+        if (source.startsWith("hsl")) {
+            const [h, s, l] = source.slice(4, -1).split(",").map(v => +v)
+            return new Color(h / 255, s / 255, l / 255)
+        }
+
+        throw new SyntaxError(`Unsupported color string "${source}"`)
+    }
+
     public static fromHex(source: string) {
         let offset = 0
         if (source[0] == "#") offset += 1
