@@ -198,6 +198,30 @@ export class Point {
         }
     }
 
+    /**
+     * Returns an array specifying the scalars to multiply dir$ and add to pos$ to get the intersection point. Scalars are infinite if lines are parallel.
+     * @example
+     * const [t1, t2] = Point.getLineIntersectionScalars(pos1, dir1, pos2, dir2)
+     * const didIntersect = t1 != Infinity
+     * const intersection = pos1.add(dir1.mul(t1))
+     * // or
+     * const intersection = pos2.add(dir2.mul(t2))
+    */
+    static getLineIntersectionScalars(pos1: Point, dir1: Point, pos2: Point, dir2: Point): [t1: number, t2: number] {
+        const denom = dir2.y * dir1.x - dir2.x * dir1.y
+        if (denom == 0) return [Infinity, Infinity]
+
+        const t1 = (dir2.x * (pos1.y - pos2.y) - dir2.y * (pos1.x - pos2.x)) / denom
+        const t2 = (dir1.x * (pos1.y - pos2.y) - dir1.y * (pos1.x - pos2.x)) / denom
+
+        return [t1, t2]
+    }
+
+    static getLineIntersection(pos1: Point, dir1: Point, pos2: Point, dir2: Point) {
+        const t1 = this.getLineIntersectionScalars(pos1, dir1, pos2, dir2)[0]
+        return pos1.add(dir1.mul(t1))
+    }
+
     /** [1, 1] */
     static readonly one = new Point(1, 1)
     /** [0, 0] */
