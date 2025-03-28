@@ -255,6 +255,20 @@ export class Drawer {
         return this
     }
 
+    /** Sets a radial gradient as a style */
+    setRadialGradient(start: Point, startRadius: number, end: Point | null, endRadius: number | null, stops: readonly (readonly [number, string])[]) {
+        if (end == null) end = start
+        if (endRadius == null) {
+            endRadius = startRadius
+            startRadius = 0
+        }
+
+        let gradient = this.ctx.createRadialGradient(start.x, start.y, startRadius, end.x, end.y, endRadius)
+        stops.forEach(v => gradient.addColorStop(v[0], v[1]))
+        this.setStyle(gradient)
+        return this
+    }
+
     /** Pushes the current rendering settings to a stack, can pop with `.restore` */
     save() {
         this.ctx.save()
