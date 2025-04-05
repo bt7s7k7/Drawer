@@ -14,7 +14,8 @@ export const DrawerView = defineComponent({
             type: Object as PropType<DrawerInputConsumer.Builder>
         },
         drawEvent: { type: String as PropType<"animation-frame" | "timer" | "disabled"> },
-        allowContextMenu: { type: Boolean }
+        allowContextMenu: { type: Boolean },
+        alwaysEmitMoveEvents: { type: Boolean },
     },
     setup(props, ctx) {
         const canvas = ref<HTMLCanvasElement>(null!)
@@ -51,7 +52,7 @@ export const DrawerView = defineComponent({
             const touchend = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "end", event)
             const touchmove = (event: TouchEvent) => props.drawerInput?.processTouchEvent(drawer.value!, "move", event)
 
-            const mouseMove = (event: MouseEvent) => (props.drawerInput.mouse.over || props.drawerInput.mouse.any.down) && props.drawerInput?.processMouseInput(drawer.value!, "move", event, false)
+            const mouseMove = (event: MouseEvent) => (props.alwaysEmitMoveEvents || props.drawerInput.mouse.over || props.drawerInput.mouse.any.down) && props.drawerInput?.processMouseInput(drawer.value!, "move", event, false)
             const mouseUp = (event: MouseEvent) => props.drawerInput?.processMouseInput(drawer.value!, "up", event, false)
 
             window.addEventListener("keydown", keyDown)
