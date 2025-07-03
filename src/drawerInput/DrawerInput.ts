@@ -371,6 +371,10 @@ export namespace DrawerInput {
             return this.down && !this.lastDown
         }
 
+        public released() {
+            return !this.down && this.lastDown
+        }
+
         public readonly onDown = new EventEmitter<void>()
         public readonly onUp = new EventEmitter<void>()
 
