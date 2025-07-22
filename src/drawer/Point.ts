@@ -3,6 +3,10 @@ export class Point {
         return new Point(Math.floor(this.x), Math.floor(this.y))
     }
 
+    round() {
+        return new Point(Math.round(this.x), Math.round(this.y))
+    }
+
     makePixelPerfect() {
         return new Point(Math.floor(this.x) + 0.5, Math.floor(this.y) + 0.5)
     }
