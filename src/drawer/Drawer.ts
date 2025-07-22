@@ -488,12 +488,12 @@ export namespace Drawer {
             const pos = this.shouldCenterView ? this.offset.add(size.center()) : this.offset
 
             this.worldToScreen = Matrix.identity
-                .scale(this.scale)
                 .translate(pos)
+                .scale(this.scale)
 
             this.screenToWorld = Matrix.identity
-                .translate(pos.mul(-1))
                 .scale(1 / this.scale)
+                .translate(pos.mul(-1))
         }
 
         /**

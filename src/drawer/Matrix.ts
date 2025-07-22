@@ -9,9 +9,9 @@ export class Matrix {
         const y = arguments.length == 2 ? arguments[1] : arguments[0].y
 
         return new Matrix(
-            this.m11, this.m21, this.m31 + x,
-            this.m12, this.m22, this.m32 + y,
-            this.m13, this.m23, this.m33
+            this.m11, this.m21, this.m11 * x + this.m21 * y + this.m31,
+            this.m12, this.m22, this.m12 * x + this.m22 * y + this.m32,
+            this.m13, this.m23, this.m13 * x + this.m23 * y + this.m33,
         )
     }
 
@@ -20,15 +20,17 @@ export class Matrix {
         const sin = Math.sin(angle)
 
         return new Matrix(
-            cos * this.m11 + sin * this.m12,
-            cos * this.m21 + sin * this.m22,
-            cos * this.m31 + sin * this.m32,
+            this.m11 * cos + this.m21 * sin + this.m31 * 0,
+            this.m11 * -sin + this.m21 * cos + this.m31 * 0,
+            this.m11 * 0 + this.m21 * 0 + this.m31 * 1,
 
-            -sin * this.m11 + cos * this.m12,
-            -sin * this.m21 + cos * this.m22,
-            -sin * this.m31 + cos * this.m32,
+            this.m12 * cos + this.m22 * sin + this.m32 * 0,
+            this.m12 * -sin + this.m22 * cos + this.m32 * 0,
+            this.m12 * 0 + this.m22 * 0 + this.m32 * 1,
 
-            this.m13, this.m23, this.m33
+            this.m13 * cos + this.m23 * sin + this.m33 * 0,
+            this.m13 * -sin + this.m23 * cos + this.m33 * 0,
+            this.m13 * 0 + this.m23 * 0 + this.m33 * 1,
         )
     }
 
@@ -60,9 +62,9 @@ export class Matrix {
         }
 
         return new Matrix(
-            this.m11 * x, this.m21 * x, this.m31 * x,
-            this.m12 * y, this.m22 * y, this.m32 * y,
-            this.m13, this.m23, this.m33
+            this.m11 * x, this.m21 * y, this.m31,
+            this.m12 * x, this.m22 * y, this.m32,
+            this.m13 * x, this.m23 * y, this.m33
         )
     }
 
@@ -147,6 +149,20 @@ export class Matrix {
             && this.m13 == 0
             && this.m23 == 0
             && this.m33 == 1
+    }
+
+    public isEqual(other: Matrix) {
+        if (this == other) return true
+
+        return this.m11 == other.m11
+            && this.m12 == other.m12
+            && this.m13 == other.m13
+            && this.m21 == other.m21
+            && this.m22 == other.m22
+            && this.m23 == other.m23
+            && this.m31 == other.m31
+            && this.m32 == other.m32
+            && this.m33 == other.m33
     }
 
     public get(x: number, y: number) {
