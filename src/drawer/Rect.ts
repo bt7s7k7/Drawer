@@ -74,6 +74,10 @@ export class Rect {
         return new Rect(this.x, this.y, this.width * amount, this.height * amount)
     }
 
+    mulAll(amount: number) {
+        return new Rect(this.x * amount, this.y * amount, this.width * amount, this.height * amount)
+    }
+
     /** Gets the ending point */
     end() {
         return new Point(this.x + this.width, this.y + this.height)
