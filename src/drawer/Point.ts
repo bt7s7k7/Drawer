@@ -25,7 +25,7 @@ export class Point {
     }
 
     toAngle() {
-        return Math.atan2(this.x, this.y)
+        return Math.atan2(this.y, this.x)
     }
 
     scale(other: { x: number, y: number } | number, otherY = 0) {
@@ -55,7 +55,7 @@ export class Point {
     }
 
     static fromAngle(angle: number) {
-        return new Point(Math.sin(angle), Math.cos(angle))
+        return new Point(Math.cos(angle), Math.sin(angle))
     }
 
     spread(): [number, number] {
