@@ -133,6 +133,11 @@ export class Point {
         return new Point({ ...this, [axis]: value })
     }
 
+    *[Symbol.iterator]() {
+        yield this.x
+        yield this.y
+    }
+
     static dot(a: Point, b: Point) {
         return a.x * b.x + a.y * b.y
     }
