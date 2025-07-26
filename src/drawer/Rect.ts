@@ -291,6 +291,12 @@ export class Rect {
         )
     }
 
+    snapToGrid() {
+        const start = this.pos().floor()
+        const end = this.end().ceil()
+        return new Rect(start, end.sub(start))
+    }
+
     static extends(center: Point, size: Point) {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
