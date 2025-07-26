@@ -15,6 +15,10 @@ export class Point {
         return new Point(Math.ceil(this.x), Math.ceil(this.y))
     }
 
+    abs() {
+        return new Point(Math.abs(this.x), Math.abs(this.y))
+    }
+
     normalize() {
         if (this.x == 0 && this.y == 0) return Point.zero
         return this.mul(1 / Math.hypot(this.x, this.y))
