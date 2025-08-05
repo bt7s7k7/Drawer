@@ -99,6 +99,7 @@ export class Color {
     public static cyan = new Color(0, 1, 1)
     public static magenta = new Color(1, 0, 1)
     public static orange = new Color(1, 0.25, 0)
+    public static transparent = new Color(0, 0, 0, 0)
 
     public static fromCSS(source: string) {
         if (source.startsWith("rgb")) {
