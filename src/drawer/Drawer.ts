@@ -114,6 +114,7 @@ export class Drawer {
                 if (sizeOrOptions.outline) {
                     if (typeof sizeOrOptions.outline == "function") {
                         sizeOrOptions.outline({
+                            drawer: this,
                             metrics: this.ctx.measureText(v),
                             origin: linePos,
                             size: +size.slice(0, -2),
@@ -427,11 +428,12 @@ export namespace Drawer {
         size?: string | number
         align?: CanvasTextAlign
         baseline?: CanvasTextBaseline
-        outline?: boolean | ((options: TextRenderingMetrics) => void)
+        outline?: boolean | ((options: TextOutlineOptions) => void)
         modifier?: "bold" | "italic" | "italic bold"
     }
 
-    export interface TextRenderingMetrics {
+    export interface TextOutlineOptions {
+        drawer: Drawer
         origin: Point
         metrics: TextMetrics
         size: number
