@@ -65,6 +65,10 @@ export class Color {
         return { h, s, l }
     }
 
+    public invert() {
+        return new Color(1 - this.r, 1 - this.g, 1 - this.b, this.a)
+    }
+
     public readonly r: number
     public readonly g: number
     public readonly b: number
