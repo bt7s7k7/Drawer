@@ -305,6 +305,10 @@ export class Rect {
         return new Rect(input.left, input.top, input.width, input.height)
     }
 
+    static fromSize(input: { width: number, height: number }) {
+        return new Rect(0, 0, input.width, input.height)
+    }
+
     static union(targets: (Rect | Point)[]) {
         let minX = Infinity
         let minY = Infinity
