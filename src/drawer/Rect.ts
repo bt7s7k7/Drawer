@@ -267,7 +267,7 @@ export class Rect {
             }
             return new Rect(0, 0, width, this.height)
         } else {
-            const height = this.width / ratio
+            const height = this.width * ratio
             if (height > this.height) {
                 const widthRatio = this.height / height
                 const width = this.width * widthRatio
