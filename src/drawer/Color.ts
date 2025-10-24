@@ -1,3 +1,4 @@
+/** Represents an RGB color value with opacity, where each component ranges from 0 to 1. */
 export class Color {
     /** Creates a CSS color value in the `rgba(r,b,g,a)` format */
     public toStyle() {
@@ -8,6 +9,7 @@ export class Color {
             })`
     }
 
+    /** Interpolates between colors. Equivalent to a mix function. */
     public lerp(other: Color, t: number) {
         return new Color(
             this.r + (other.r - this.r) * t,
@@ -17,6 +19,7 @@ export class Color {
         )
     }
 
+    /** Multiplies color components by a scalar. The opacity is not affected. */
     public mul(value: number) {
         return new Color(
             this.r * value,
@@ -26,10 +29,12 @@ export class Color {
         )
     }
 
+    /** Sets the opacity */
     public opacity(opacity: number) {
         return new Color(this.r, this.g, this.b, opacity)
     }
 
+    /** Returns a greyscale value by averaging the color components */
     public toGreyscale() {
         return (this.r + this.g + this.b) / 3
     }
@@ -42,6 +47,7 @@ export class Color {
             + Math.min(255, Math.floor(this.b * 255)).toString(16).padStart(2, "0")
     }
 
+    /** Converts this RGB color to HSL, where each output component ranges from 0 to 1. */
     public toHSL() {
         const { r, g, b } = this
 
@@ -65,13 +71,18 @@ export class Color {
         return { h, s, l }
     }
 
+    /** Inverts all color components. Opacity is not affected. */
     public invert() {
         return new Color(1 - this.r, 1 - this.g, 1 - this.b, this.a)
     }
 
+    /** Red color component */
     public readonly r: number
+    /** Green color component */
     public readonly g: number
+    /** Blue color component */
     public readonly b: number
+    /** Opacity */
     public readonly a: number
 
     constructor()
@@ -105,6 +116,7 @@ export class Color {
     public static orange = new Color(1, 0.25, 0)
     public static transparent = new Color(0, 0, 0, 0)
 
+    /** Parses a CSS color specifier. Supported formats are `rgb()`, `rgba()`, `hsl()` and hex. */
     public static fromCSS(source: string) {
         if (source.startsWith("rgb")) {
             const [r, g, b] = source.slice(4, -1).split(",").map(v => +v)
@@ -128,6 +140,7 @@ export class Color {
         throw new SyntaxError(`Unsupported color string "${source}"`)
     }
 
+    /** Parses a hex color */
     public static fromHex(source: string) {
         let offset = 0
         if (source[0] == "#") offset += 1
@@ -139,6 +152,7 @@ export class Color {
         return new Color(r, g, b)
     }
 
+    /** Converts an HSL color to RGB */
     public static fromHSL(h: number, s: number, l: number) {
         let r, g, b
 

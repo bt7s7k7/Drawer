@@ -2,6 +2,7 @@ import { Point } from "./Point"
 import { Rect } from "./Rect"
 
 export class Matrix {
+    /** Returns a new matrix that also translates by the offset */
     public translate(x: number, y: number): Matrix
     public translate(offset: { x: number, y: number }): Matrix
     public translate() {
@@ -15,6 +16,7 @@ export class Matrix {
         )
     }
 
+    /** Returns a new matrix that also rotates by the angle (in radians) */
     public rotate(angle: number) {
         const cos = Math.cos(angle)
         const sin = Math.sin(angle)
@@ -34,6 +36,7 @@ export class Matrix {
         )
     }
 
+    /** Returns a transposed matrix */
     public transpose() {
         return new Matrix(
             this.m11, this.m12, this.m13,
@@ -42,6 +45,7 @@ export class Matrix {
         )
     }
 
+    /** Returns a new matrix that also rotates by the scale */
     public scale(scale: number): Matrix
     public scale(scale: Point): Matrix
     public scale(x: number, y: number): Matrix
@@ -68,6 +72,7 @@ export class Matrix {
         )
     }
 
+    /** Returns a new matrix that is this matrix multiplied by another */
     public mul(value: Matrix) {
         return new Matrix(
             this.m11 * value.m11 + this.m21 * value.m12 + this.m31 * value.m13,
@@ -84,6 +89,7 @@ export class Matrix {
         )
     }
 
+    /** Transforms a point using this matrix */
     public transform(point: Point) {
         const v11 = point.x * this.m11
         const v12 = point.x * this.m12
@@ -105,6 +111,7 @@ export class Matrix {
         return new Point(x, y)
     }
 
+    /** Transforms a vector using this matrix (translation is not applied) */
     public transformVector(point: Point) {
         const v11 = point.x * this.m11
         const v12 = point.x * this.m12
@@ -126,6 +133,7 @@ export class Matrix {
         return new Point(x, y)
     }
 
+    /** Transforms a rect using this matrix. As rects are always axis-aligned, if this matrix performs rotations or skew, the result is undefined behaviour. */
     public transformRect(rect: Rect) {
         const start = this.transform(rect.pos())
         const end = this.transform(rect.end())
@@ -133,10 +141,12 @@ export class Matrix {
         return new Rect(start, end.add(start.mul(-1)))
     }
 
+    /** @deprecated */
     public transformWithContext(point: Point, context: Rect) {
         return this.transform(point.antiScale(context.size())).scale(context.size())
     }
 
+    /** Checks if this matrix is an identity matrix */
     public isIdentity() {
         if (this == Matrix.identity) return true
 
@@ -151,6 +161,7 @@ export class Matrix {
             && this.m33 == 1
     }
 
+    /** Check if this matrix equals another */
     public isEqual(other: Matrix) {
         if (this == other) return true
 
@@ -165,6 +176,7 @@ export class Matrix {
             && this.m33 == other.m33
     }
 
+    /** Gets the component with the provided coordinates (zero based) */
     public get(x: number, y: number) {
         if (x == 0 && y == 0) return this.m11
         if (x == 0 && y == 1) return this.m12
@@ -178,10 +190,12 @@ export class Matrix {
         else throw new RangeError("Matrix access out of range")
     }
 
+    /** Returns the translation of this matrix */
     public end() {
         return this.transform(Point.zero)
     }
 
+    /** Converts to a CSS matrix */
     public toCSS() {
         return `matrix(${this.m11}, ${this.m21}, ${this.m12}, ${this.m22}, ${this.m31}, ${this.m32})`
     }
@@ -198,8 +212,10 @@ export class Matrix {
         public readonly m33: number = 1
     ) { }
 
+    /** Identity matrix */
     public static readonly identity = new Matrix()
 
+    /** Converts from a `DOMMatrix` */
     public static fromDOMMatrix(source: Record<
         "a" | "b" | "c" |
         "d" | "e" | "f",

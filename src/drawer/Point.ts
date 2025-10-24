@@ -1,80 +1,97 @@
+/** Represents a 2D vector or point. */
 export class Point {
-    floor() {
+    /** Returns a point with all components floored */
+    public floor() {
         return new Point(Math.floor(this.x), Math.floor(this.y))
     }
 
-    round() {
+    /** Returns a point with all components rounded */
+    public round() {
         return new Point(Math.round(this.x), Math.round(this.y))
     }
 
-    makePixelPerfect() {
+    /** Returns a point that allows for drawing lines with even widths without antialiasing */
+    public makePixelPerfect() {
         return new Point(Math.floor(this.x) + 0.5, Math.floor(this.y) + 0.5)
     }
 
-    ceil() {
+    /** Returns a point with all components ceiled */
+    public ceil() {
         return new Point(Math.ceil(this.x), Math.ceil(this.y))
     }
 
-    abs() {
+    /** Returns a point with all components having an absolute value */
+    public abs() {
         return new Point(Math.abs(this.x), Math.abs(this.y))
     }
 
-    normalize() {
+    /** Returns a normalized vector */
+    public normalize() {
         if (this.x == 0 && this.y == 0) return Point.zero
         return this.mul(1 / Math.hypot(this.x, this.y))
     }
 
-    tangent() {
+    /** Returns a vector orthogonal to this one */
+    public tangent() {
         return new Point(this.y, -this.x)
     }
 
-    toAngle() {
+    /** Returns the angle of this vector */
+    public toAngle() {
         return Math.atan2(this.y, this.x)
     }
 
-    scale(other: { x: number, y: number } | number, otherY = 0) {
+    /** Scales this vector by another vector, by element-wise multiplication */
+    public scale(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x * other.x, this.y * other.y)
         else
             return new Point(this.x * other, this.y * otherY)
     }
 
-    antiScale(other: { x: number, y: number } | number, otherY = 0) {
+    /** Inverse scales this vector by another vector, by element-wise division */
+    public antiScale(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x / other.x, this.y / other.y)
         else
             return new Point(this.x / other, this.y / otherY)
     }
 
-    invert() {
+    /** Returns a new vector with all components being inverted */
+    public invert() {
         return new Point(1 / this.x, 1 / this.y)
     }
 
-    public readonly x: number
-    constructor(x: number | { x: number, y: number } = 0, public readonly y = 0) {
+    readonly x: number
+    constructor(x: number | { x: number, y: number } = 0, readonly y = 0) {
         if (typeof x === "object") {
             this.x = x.x
             this.y = x.y
         } else this.x = x
     }
 
-    static fromAngle(angle: number) {
+    /** Creates a unit vector using an angle (in radians) */
+    public static fromAngle(angle: number) {
         return new Point(Math.cos(angle), Math.sin(angle))
     }
 
-    spread(): [number, number] {
+    /** Returns an array of form `[x, y]` */
+    public spread(): [number, number] {
         return [this.x, this.y]
     }
 
-    mul(amount: number) {
-        return new Point(this.x * amount, this.y * amount)
+    /** Multiplies this vector by a scalar */
+    public mul(scalar: number) {
+        return new Point(this.x * scalar, this.y * scalar)
     }
 
-    pow(amount: number) {
-        return new Point(this.x ** amount, this.y ** amount)
+    /** Returns a new vector, where each component is put to the power */
+    public pow(power: number) {
+        return new Point(this.x ** power, this.y ** power)
     }
 
-    add(other: { x: number, y: number }): Point
+    /** Adds two vectors and returns a result */
+    public add(other: { x: number, y: number }): Point
     add(x: number, y: number): Point
     add(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
@@ -83,7 +100,8 @@ export class Point {
             return new Point(this.x + other, this.y + otherY)
     }
 
-    sub(other: { x: number, y: number }): Point
+    /** Subtracts two vectors and returns a result */
+    public sub(other: { x: number, y: number }): Point
     sub(x: number, y: number): Point
     sub(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
@@ -92,52 +110,63 @@ export class Point {
             return new Point(this.x - other, this.y - otherY)
     }
 
-    makeKey() {
+    /** Creates a string that uniquely identifies this point for use as a key in a `Map` or a record. */
+    public makeKey() {
         return `${this.x}:${this.y}`
     }
 
-    hash() {
+    /** Returns a hash code of this point. The result is in range from 0 to 1 and can be used as a pseudorandom number. */
+    public hash() {
         const t = this.x * 12.9898 + this.y * 78.233
         const y = Math.sin(t) * 43758.5453
         return y - Math.floor(y)
     }
 
-    dist(other: { x: number, y: number }) {
+    /** Returns the euclidean distance to another point */
+    public dist(other: { x: number, y: number }) {
         return Math.hypot(this.x - other.x, this.y - other.y)
     }
 
-    isZero() {
+    /** Check is this vector is zero */
+    public isZero() {
         return this.x === 0 && this.y === 0
     }
 
-    isNaN() {
+    /** Check at least one component is `NaN` */
+    public isNaN() {
         return isNaN(this.x) || isNaN(this.y)
     }
 
-    size() {
+    /** Returns the magnitude of this vector */
+    public size() {
         return Math.hypot(this.x, this.y)
     }
 
-    sizeSqr() {
+    /** Returns the squared magnitude of this vector */
+    public sizeSqr() {
         return this.x ** 2 + this.y ** 2
     }
 
-    clampSize(maxSize: number) {
+    /** If the magnitude of this vector is larger than `maxSize` returns a new vector of size `maxSize`, otherwise returns this point. */
+    public clampSize(maxSize: number) {
         let size = Math.hypot(this.x, this.y)
         if (size > maxSize) {
             return this.normalize().mul(maxSize)
         } else return this
     }
 
-    area() {
+    /** Returns the product of the `x` and `y` components */
+    public area() {
         return this.x * this.y
     }
 
-    equals(other: { x: number, y: number }) {
+    /** Check if this vector has identical components to the other */
+    public equals(other: { x: number, y: number }) {
         return this.x == other.x && this.y == other.y
     }
 
-    with(axis: "x" | "y", value: number) {
+    /** Returns a new point with one component being replaced */
+    public with(axis: "x" | "y", value: number) {
         return new Point({ ...this, [axis]: value })
     }
 
@@ -146,22 +175,28 @@ export class Point {
         yield this.y
     }
 
-    static dot(a: Point, b: Point) {
+    /** Returns a dot product */
+    public static dot(a: Point, b: Point) {
         return a.x * b.x + a.y * b.y
     }
 
-    static project(start: Point, direction: Point, target: Point) {
+    /** Projects the `target` point on a line defined by `start` and `direction`. */
+    public static project(start: Point, direction: Point, target: Point) {
         const targetStart = target.add(start.mul(-1))
         const dot = this.dot(direction, targetStart)
 
         return {
+            /** Distance from the start of the line to the projected point */
             length: dot,
+            /** Position of the projected point */
             point() { return start.add(direction.mul(this.length)) },
+            /** Position of the projected point, clamped to a line segment starting at `start` and of length `maxLength` */
             pointClamped(maxLength: number) { return start.add(direction.mul(this.length < 0 ? 0 : this.length > maxLength ? maxLength : this.length)) }
         }
     }
 
-    static cardinalDirection(start: Point, end: Point) {
+    /** Calculates the direction from `start` to `end` and snaps it to one of the four cardinal directions. */
+    public static cardinalDirection(start: Point, end: Point) {
         const diff = end.add(start.mul(-1))
 
         const xAbs = Math.abs(diff.x)
@@ -174,27 +209,33 @@ export class Point {
         }
     }
 
-    lerp(target: Point, frac: number) {
+    /** Interpolates between vectors */
+    public lerp(target: Point, frac: number) {
         return this.add(target.add(this.mul(-1)).mul(frac))
     }
 
-    static min(a: Point, b: Point) {
-        return new Point(Math.min(a.x, b.x), Math.min(a.y, b.y),)
+    /** Returns a new point, where each component is the smallest one between `a` and `b` */
+    public static min(a: Point, b: Point) {
+        return new Point(Math.min(a.x, b.x), Math.min(a.y, b.y))
     }
 
-    static max(a: Point, b: Point) {
-        return new Point(Math.max(a.x, b.x), Math.max(a.y, b.y),)
+    /** Returns a new point, where each component is the largest one between `a` and `b` */
+    public static max(a: Point, b: Point) {
+        return new Point(Math.max(a.x, b.x), Math.max(a.y, b.y))
     }
 
-    static dist(a: Point, b: Point) {
+    /** Returns the euclidean distance between two points */
+    public static dist(a: Point, b: Point) {
         return Math.hypot(a.x - b.x, a.y - b.y)
     }
 
-    static distSqr(a: Point, b: Point) {
+    /** Returns the squared euclidean distance between two points */
+    public static distSqr(a: Point, b: Point) {
         return (a.x - b.x) ** 2 + (a.y - b.y) ** 2
     }
 
-    static calculateObjectFit(target: Point, container: Point, type: "contain" | "cover" | "perfect") {
+    /** Calculates a new size of an object of size `target` required for it to fit in an container */
+    public static calculateObjectFit(target: Point, container: Point, type: "contain" | "cover" | "perfect") {
         const widthRatio = target.x / container.x
         const heightRatio = target.y / container.y
 
@@ -230,24 +271,26 @@ export class Point {
         return [t1, t2]
     }
 
-    static getLineIntersection(pos1: Point, dir1: Point, pos2: Point, dir2: Point) {
+    /** Returns a point at which two lines intersect. If there is no intersection, the components of the returned point will be `Infinity`. */
+    public static getLineIntersection(pos1: Point, dir1: Point, pos2: Point, dir2: Point) {
         const t1 = this.getLineIntersectionScalars(pos1, dir1, pos2, dir2)[0]
         return pos1.add(dir1.mul(t1))
     }
 
     /** [1, 1] */
-    static readonly one = new Point(1, 1)
+    public static readonly one = new Point(1, 1)
     /** [0, 0] */
-    static readonly zero = new Point()
+    public static readonly zero = new Point()
     /** [0, -1] */
-    static readonly up = new Point(0, -1)
+    public static readonly up = new Point(0, -1)
     /** [0, 1] */
-    static readonly down = new Point(0, 1)
+    public static readonly down = new Point(0, 1)
     /** [-1, 0] */
-    static readonly left = new Point(-1, 0)
+    public static readonly left = new Point(-1, 0)
     /** [1, 0] */
-    static readonly right = new Point(1, 0)
+    public static readonly right = new Point(1, 0)
     /** [NaN, NaN] */
-    static readonly NaN = new Point(NaN, NaN)
-    static readonly directions = [Point.up, Point.right, Point.down, Point.left]
+    public static readonly NaN = new Point(NaN, NaN)
+    /** Array of the four cardinal directions. */
+    public static readonly directions = [Point.up, Point.right, Point.down, Point.left] as const
 }

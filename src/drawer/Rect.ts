@@ -1,34 +1,48 @@
 import { Point } from "./Point"
 
+/** Constraints for alignment */
 export interface RectAlignOptions {
+    /** Width of the resulting rectangle. */
     width?: number
+    /** Height of the resulting rectangle. */
     height?: number
+    /** Distance from the left side of the container. */
     left?: number
+    /** Distance from the right side of the container. */
     right?: number
+    /** Distance from the top side of the container. */
     top?: number
+    /** Distance from the bottom side of the container. */
     bottom?: number
+    /** The width and height of the resulting rectangle. */
     size?: number
+    /** Minimum padding from the sides of the container */
     padding?: number
 }
 
 export class Rect {
-    size() {
+    /** Returns a vector of the size of this rect */
+    public size() {
         return new Point(this.width, this.height)
     }
 
-    pos() {
+    /** Returns the positions of this rect */
+    public pos() {
         return new Point(this.x, this.y)
     }
 
-    makePixelPerfect(): Rect {
+    /** Returns a new rect that allows for stroking rectangle with lines of an odd line width */
+    public makePixelPerfect(): Rect {
         return new Rect(Math.floor(this.x) + 0.5, Math.floor(this.y) + 0.5, Math.floor(this.width), Math.floor(this.height))
     }
 
-    floor(): Rect {
+    /** Returns a new rectangle where all components are floored. */
+    public floor(): Rect {
         return new Rect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.width), Math.floor(this.height))
     }
 
-    with(axis: "x" | "y" | "width" | "height", value: number) {
+    /** Returns a new rectangle where one component is replaced */
+    public with(axis: "x" | "y" | "width" | "height", value: number) {
         return new Rect({ ...this, [axis]: value })
     }
 
@@ -61,29 +75,33 @@ export class Rect {
         }
     }
 
-    spread(): [number, number, number, number] {
+    /** Returns an array of format `[x, y, width, height]` */
+    public spread(): [number, number, number, number] {
         return [this.x, this.y, this.width, this.height]
     }
 
     /** Returns a new rect with the same size, but starting at the origin */
-    origin() {
+    public origin() {
         return new Rect(0, 0, this.width, this.height)
     }
 
-    mul(amount: number) {
+    /** Multiplies the size of this rect by a scalar */
+    public mul(amount: number) {
         return new Rect(this.x, this.y, this.width * amount, this.height * amount)
     }
 
-    mulAll(amount: number) {
+    /** Multiplies all components of this rect by a scalar */
+    public mulAll(amount: number) {
         return new Rect(this.x * amount, this.y * amount, this.width * amount, this.height * amount)
     }
 
     /** Gets the ending point */
-    end() {
+    public end() {
         return new Point(this.x + this.width, this.y + this.height)
     }
 
-    translate(offset: { x: number, y: number } | number, offsetY = 0) {
+    /** Returns a new rect translated by the offset */
+    public translate(offset: { x: number, y: number } | number, offsetY = 0) {
         if (typeof offset === "object") {
             return new Rect(this.x + offset.x, this.y + offset.y, this.width, this.height)
         } else {
@@ -91,7 +109,8 @@ export class Rect {
         }
     }
 
-    expand(offset: { x: number, y: number } | number, offsetY = 0) {
+    /** Returns a new rect with its size changed by the offset */
+    public expand(offset: { x: number, y: number } | number, offsetY = 0) {
         if (typeof offset === "object") {
             return new Rect(this.x, this.y, this.width + offset.x, this.height + offset.y)
         } else {
@@ -99,35 +118,42 @@ export class Rect {
         }
     }
 
-    copy() {
+    /** Returns a new rect with the same components */
+    public copy() {
         return new Rect(this.x, this.y, this.width, this.height)
     }
 
-    containsPoint(point: Point) {
+    /** Checks if a point is inside this rect */
+    public containsPoint(point: Point) {
         return point.x >= this.x && point.x < this.x + this.width && point.y >= this.y && point.y < this.y + this.height
     }
 
-    center() {
+    /** Returns point at the center of this rect */
+    public center() {
         return this.pos().add(this.size().mul(0.5))
     }
 
     /** Test if other rect is inside this rect */
-    containsRect(other: Rect) {
+    public containsRect(other: Rect) {
         let thisEnd = this.end()
         let otherEnd = other.end()
 
         return otherEnd.x >= this.x && otherEnd.y >= this.y && other.x <= thisEnd.x && other.y <= thisEnd.y
     }
 
-    equals(other: { x: number, y: number, width: number, height: number }) {
+    /** Checks if this rect has all components equal to another */
+    public equals(other: { x: number, y: number, width: number, height: number }) {
         return this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height
     }
 
-    sizeEquals(other: { width: number, height: number }) {
+
+    /** Checks if this rect has size equal to another */
+    public sizeEquals(other: { width: number, height: number }) {
         return this.width == other.width && this.height == other.height
     }
 
-    awayVector(point: Point) {
+    /** @deprecated */
+    public awayVector(point: Point) {
         let x = 0
         let y = 0
 
@@ -142,17 +168,22 @@ export class Rect {
         return new Point(x, y)
     }
 
-    area() {
+    /** Returns the area of this rect */
+    public area() {
         return this.width * this.height
     }
 
-    clampPoint(point: Point) {
+    /** Returns a new new point that has its components clamped to be inside this rect */
+    public clampPoint(point: Point) {
         return new Point(
             Math.max(this.x, Math.min(this.x + this.width, point.x)),
             Math.max(this.y, Math.min(this.y + this.height, point.y))
         )
     }
 
+    /** Considering a line segment starting at `[0,0]` and extending by `vector`, get the end
+    public  * point of this segment, if the line segment is constrained in such a way, that it cannot cross
+     * the boundary of this rect. */
     clampVector(vector: Point) {
         let x2 = this.width * 0.5
         let y2 = this.height * 0.5
@@ -180,25 +211,32 @@ export class Rect {
         return direction.mul(Math.min(size, t1, t2))
     }
 
-    scale(rect: Rect) {
+    /** Scales the size of this rect by a vector */
+    public scale(rect: Rect) {
         return new Rect(this.x, this.y, this.width * rect.width, this.height * rect.height)
     }
 
-    antiScale(rect: Rect) {
+    /** Inverse scales the size of this rect by a vector by element-wise division */
+    public antiScale(rect: Rect) {
         return new Rect(this.x, this.y, this.width / rect.width, this.height / rect.height)
     }
 
-    ceilSize() {
+    /** Returns a new rect where the size is ceiled */
+    public ceilSize() {
         return new Rect(this.x, this.y, Math.ceil(this.width), Math.ceil(this.height))
     }
 
-    getFracPoint(point: Point): Point
+    /** Returns a point where its components are normalized relative to the position and size of this rect */
+    public getFracPoint(point: Point): Point
     getFracPoint(x: number, y: number): Point
     getFracPoint(pointOrX: number | Point, y?: number) {
         const point = new Point(pointOrX, y)
         return this.pos().add(this.size().scale(point))
     }
 
+    /** Returns a new rect that is positioned inside this rect according to the specified
+    public  * constraints. The rect will be of the maximum possible size, while still satisfying all
+     * provided constraints.  */
     align(options: RectAlignOptions) {
         let x = 0
         let width = 0
@@ -257,7 +295,8 @@ export class Rect {
         return new Rect(x, y, width, height)
     }
 
-    aspectRatio(ratio: number, center = false) {
+    /** Returns a new rect that has the matches an aspect ratio by shrinking this rect */
+    public aspectRatio(ratio: number, center = false) {
         if (ratio > 1) {
             const width = this.height / ratio
             if (width > this.width) {
@@ -277,39 +316,46 @@ export class Rect {
         }
     }
 
-    min() {
+    /** Returns the point inside this rect with the lowest possible components */
+    public min() {
         return new Point(
             Math.min(this.x, this.x + this.width),
             Math.min(this.y, this.y + this.height)
         )
     }
 
-    max() {
+    /** Returns the point inside this rect with the largest possible components */
+    public max() {
         return new Point(
             Math.max(this.x, this.x + this.width),
             Math.max(this.y, this.y + this.height)
         )
     }
 
-    snapToGrid() {
+    /** Returns a new rect that is aligned to an integer grid. */
+    public snapToGrid() {
         const start = this.pos().floor()
         const end = this.end().ceil()
         return new Rect(start, end.sub(start))
     }
 
-    static extends(center: Point, size: Point) {
+    /** Creates a new rect with the provided `center` and `size` */
+    public static extends(center: Point, size: Point) {
         return new Rect(center.add(size.mul(-0.5)), size)
     }
 
-    static fromDOMRect(input: { top: number, left: number, width: number, height: number }) {
+    /** Creates a rect from a `DOMRect` */
+    public static fromDOMRect(input: { top: number, left: number, width: number, height: number }) {
         return new Rect(input.left, input.top, input.width, input.height)
     }
 
-    static fromSize(input: { width: number, height: number }) {
+    /** Creates a new rect at origin with matching the size of the provided object */
+    public static fromSize(input: { width: number, height: number }) {
         return new Rect(0, 0, input.width, input.height)
     }
 
-    static union(targets: (Rect | Point)[]) {
+    /** Returns a new rect that fits all provided rects and points. */
+    public static union(targets: (Rect | Point)[]) {
         let minX = Infinity
         let minY = Infinity
         let maxX = -Infinity
@@ -336,6 +382,8 @@ export class Rect {
         return new Rect(minX, minY, maxX - minX, maxY - minY)
     }
 
+    /** Position: `[0, 0]`, Size: `[1, 1]` */
     public static one = new Rect(0, 0, 1, 1)
+    /** Position: `[0, 0]`, Size: `[0, 0]` */
     public static zero = new Rect(0, 0, 0, 0)
 }

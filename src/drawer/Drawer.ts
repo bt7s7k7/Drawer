@@ -10,14 +10,16 @@ type GlobalCompositeOperation =
     "source-atop" | "source-in" | "source-out" | "source-over" | "xor"
 
 export class Drawer {
-    public size = new Rect()
-    public fragile = false
+    public readonly size = new Rect()
+    public readonly fragile: boolean
 
     constructor(public ctx: CanvasRenderingContext2D = Drawer.CONTEXT_FACTORY(), options?: { fragile?: boolean } | "fragile") {
         if (options == "fragile") {
             this.fragile = true
         } else if (options) {
             this.fragile = options.fragile ?? false
+        } else {
+            this.fragile = false
         }
 
         if (!this.fragile) {
@@ -28,53 +30,61 @@ export class Drawer {
     }
 
     /** Sets the stroke and fill style */
-    setStyle(color: Drawer.Style) {
+    public setStyle(color: Drawer.Style) {
         if (color instanceof Color) color = color.toStyle()
         this.ctx.fillStyle = color
         this.ctx.strokeStyle = color
         return this
     }
 
-    setFillStyle(color: Drawer.Style) {
+    /** Sets only the fill style */
+    public setFillStyle(color: Drawer.Style) {
         if (color instanceof Color) color = color.toStyle()
         this.ctx.fillStyle = color
         return this
     }
 
-    setStrokeStyle(color: Drawer.Style) {
+    /** Sets only the stroke style */
+    public setStrokeStyle(color: Drawer.Style) {
         if (color instanceof Color) color = color.toStyle()
         this.ctx.strokeStyle = color
         return this
     }
 
-    setStrokeDash(segments: number[]) {
+    /** Sets the line dash, see [`ctx.setLineDash()`](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/setLineDash) for more information */
+    public setStrokeDash(segments: number[]) {
         this.ctx.setLineDash(segments)
         return this
     }
 
-    setStrokeDashOffset(offset: number) {
+    /** Sets the line dash offset, see [ctx.lineDashOffset](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineDashOffset) for more information */
+    public setStrokeDashOffset(offset: number) {
         this.ctx.lineDashOffset = offset
         return this
     }
 
-    fillRect(rect: Rect = this.size) {
+    /** Fills the specified rect with the current fill color, or the whole canvas if not specified. */
+    public fillRect(rect: Rect = this.size) {
         this.ctx.fillRect(...rect.spread())
         return this
     }
 
-    clear() {
+    /** Clears the canvas. */
+    public clear() {
         this.setSize(this.size)
         return this
     }
 
-    strokeRect(rect: Rect) {
+    /** Strokes the specified rect with the current stroke color, or the whole canvas if not specified. */
+    public strokeRect(rect: Rect) {
         this.ctx.strokeRect(...rect.spread())
         return this
     }
 
-    fillText(text: string, pos: Point, size: number, font: string): Drawer
-    fillText(text: string, pos: Point, options: Drawer.TextOptions): Drawer
-    fillText(text: string, pos: Point, sizeOrOptions: number | Drawer.TextOptions, font = "") {
+    /** Prints text at the specified position. If size or font is not specified attempts to read the CSS font style from the canvas element. */
+    public fillText(text: string, pos: Point, size: number, font: string): Drawer
+    public fillText(text: string, pos: Point, options: Drawer.TextOptions): Drawer
+    public fillText(text: string, pos: Point, sizeOrOptions: number | Drawer.TextOptions, font = "") {
         if (typeof sizeOrOptions == "number") {
             return this.fillText(text, pos, { size: sizeOrOptions, font })
         } else {
@@ -134,7 +144,7 @@ export class Drawer {
     }
 
     /** Changes the rendering context's size to the real size of the canvas element */
-    setNativeSize() {
+    public setNativeSize() {
         if (this.fragile) throw new Error("Cannot set size of fragile canvas")
 
         const canvas = this.ctx.canvas
@@ -147,13 +157,14 @@ export class Drawer {
         return this
     }
 
-    setSize(size: Point | Rect) {
+    /** Changes the size of the canvas. */
+    public setSize(size: Point | Rect) {
         if (this.fragile) throw new Error("Cannot set size of fragile canvas")
 
-        let canvas = this.ctx.canvas
-        this.size = size instanceof Point ? new Rect(new Point(), size) : size.origin()
+        const canvas = this.ctx.canvas
+        const rect = size instanceof Point ? new Rect(new Point(), size) : size.origin();
 
-        this.size = new Rect(0, 0, Math.max(this.size.width, 1), Math.max(this.size.height, 1))
+        (this as { -readonly [P in keyof this]: this[P] }).size = new Rect(0, 0, Math.max(rect.width, 1), Math.max(rect.height, 1))
 
         if (canvas.width == this.size.width && canvas.height == this.size.height) {
             this.ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -165,7 +176,8 @@ export class Drawer {
         return this
     }
 
-    matchSize(other: Drawer | { width: number, height: number }) {
+    /** Sets the size of the canvas to match the provided object. */
+    public matchSize(other: Drawer | { width: number, height: number }) {
         const size = "width" in other ? (other instanceof Rect ? other : new Rect(0, 0, other.width, other.height)) : other.size
 
         if (!this.size.equals(size)) {
@@ -175,47 +187,50 @@ export class Drawer {
         return this
     }
 
-    beginPath() {
+    /** Starts a new path, see [ctx.beginPath()](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/beginPath) for more information */
+    public beginPath() {
         this.ctx.beginPath()
         return this
     }
 
-    closePath() {
+    /** Closes a path by drawing a line to the start point, see [ctx.closePath()](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/beginPath) for more information */
+    public closePath() {
         this.ctx.closePath()
         return this
     }
 
-    /** Adds an arc to a path */
-    arc(pos: Point, radius: number, startAngle = 0, endAngle = Math.PI * 2, anticlockwise = false) {
+    /** Adds an arc to a path, see [ctx.arc()](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/arc) for more information */
+    public arc(pos: Point, radius: number, startAngle = 0, endAngle = Math.PI * 2, anticlockwise = false) {
         this.ctx.arc(pos.x, pos.y, radius, startAngle, endAngle, anticlockwise)
         return this
     }
 
-    /** Adds an arc to a path */
-    ellipse(pos: Point, radius: Point, rotation = 0, startAngle = 0, endAngle = Math.PI * 2, anticlockwise = false) {
+    /** Adds an ellipse to a path, see [ctx.ellipse()](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/ellipse) for more information */
+    public ellipse(pos: Point, radius: Point, rotation = 0, startAngle = 0, endAngle = Math.PI * 2, anticlockwise = false) {
         this.ctx.ellipse(pos.x, pos.y, radius.x, radius.y, rotation, startAngle, endAngle, anticlockwise)
         return this
     }
 
-    /** Moves the current path position */
-    move(pos: Point) {
+    /** Adds a movement to the path */
+    public move(pos: Point) {
         this.ctx.moveTo(pos.x, pos.y)
         return this
     }
 
     /** Adds a line to a path, from the last path position to the provided position */
-    lineTo(pos: Point) {
+    public lineTo(pos: Point) {
         this.ctx.lineTo(pos.x, pos.y)
         return this
     }
 
-    bezierTo(cp1: Point, cp2: Point, pos: Point) {
+    /** Adds a bezier curve to the path */
+    public bezierTo(cp1: Point, cp2: Point, pos: Point) {
         this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, pos.x, pos.y)
         return this
     }
 
     /** Strokes the path */
-    stroke(path?: Path2D) {
+    public stroke(path?: Path2D) {
         if (path) {
             this.ctx.stroke(path)
         } else {
@@ -225,7 +240,7 @@ export class Drawer {
     }
 
     /** Fills the path */
-    fill(path?: Path2D) {
+    public fill(path?: Path2D) {
         if (path) {
             this.ctx.fill(path)
         } else {
@@ -234,7 +249,8 @@ export class Drawer {
         return this
     }
 
-    shape(points: Point[]) {
+    /** Adds a polygon to the path */
+    public shape(points: Point[]) {
         let first = true
         for (const point of points) {
             if (first) {
@@ -249,7 +265,7 @@ export class Drawer {
     }
 
     /** Sets a linear gradient as a style */
-    setLinearGradient(start: Point, end: Point, stops: readonly (readonly [number, string])[]) {
+    public setLinearGradient(start: Point, end: Point, stops: readonly (readonly [number, string])[]) {
         let gradient = this.ctx.createLinearGradient(start.x, start.y, end.x, end.y)
         stops.forEach(v => gradient.addColorStop(v[0], v[1]))
         this.setStyle(gradient)
@@ -257,7 +273,7 @@ export class Drawer {
     }
 
     /** Sets a radial gradient as a style */
-    setRadialGradient(start: Point, startRadius: number, end: Point | null, endRadius: number | null, stops: readonly (readonly [number, string])[]) {
+    public setRadialGradient(start: Point, startRadius: number, end: Point | null, endRadius: number | null, stops: readonly (readonly [number, string])[]) {
         if (end == null) end = start
         if (endRadius == null) {
             endRadius = startRadius
@@ -271,40 +287,42 @@ export class Drawer {
     }
 
     /** Pushes the current rendering settings to a stack, can pop with `.restore` */
-    save() {
+    public save() {
         this.ctx.save()
         return this
     }
 
     /** Pops the current rendering settings from a stack, previously saved with `.save` */
-    restore() {
+    public restore() {
         this.ctx.restore()
         return this
     }
 
     /** Sets the current path as a clip */
-    clip() {
+    public clip() {
         this.ctx.clip()
         return this
     }
 
     /** Adds a rect to the current path */
-    rect(rect: Rect) {
+    public rect(rect: Rect) {
         this.ctx.rect(...rect.spread())
         return this
     }
 
-    setStrokeWidth(width: number) {
+    /** Sets the line width */
+    public setStrokeWidth(width: number) {
         this.ctx.lineWidth = width
         return this
     }
 
-    blit(image: Drawer.ImageSource): Drawer
-    blit(image: Drawer.ImageSource, dest: Point): Drawer
-    blit(image: ImageData, dest?: Point): Drawer
-    blit(image: Drawer.ImageSource, dest: Rect): Drawer
-    blit(image: Drawer.ImageSource, dest: Rect, source: Rect): Drawer
-    blit(image: Drawer.ImageSource | ImageData, dest: Rect | Point | null = null, source: Rect | null = null) {
+    /** Copies the selected object to the canvas */
+    public blit(image: Drawer.ImageSource): Drawer
+    public blit(image: Drawer.ImageSource, dest: Point): Drawer
+    public blit(image: ImageData, dest?: Point): Drawer
+    public blit(image: Drawer.ImageSource, dest: Rect): Drawer
+    public blit(image: Drawer.ImageSource, dest: Rect, source: Rect): Drawer
+    public blit(image: Drawer.ImageSource | ImageData, dest: Rect | Point | null = null, source: Rect | null = null) {
         if (image instanceof ImageData) {
             if (dest) {
                 this.ctx.putImageData(image, dest!.x, dest!.y)
@@ -332,17 +350,20 @@ export class Drawer {
         return this
     }
 
-    translate(offset: Point) {
+    /** Updates the canvas transform by a translation */
+    public translate(offset: Point) {
         this.ctx.translate(offset.x, offset.y)
         return this
     }
 
-    rotate(angle: number) {
+    /** Updates the canvas transform by a rotation */
+    public rotate(angle: number) {
         this.ctx.rotate(angle)
         return this
     }
 
-    scale(scale: number | Point) {
+    /** Updates the canvas transform by a scale */
+    public scale(scale: number | Point) {
         if (typeof scale == "number") {
             this.ctx.scale(scale, scale)
         } else {
@@ -351,7 +372,8 @@ export class Drawer {
         return this
     }
 
-    transform(matrix: Matrix) {
+    /** Updates the canvas transform by the matrix */
+    public transform(matrix: Matrix) {
         this.ctx.transform(
             matrix.m11, matrix.m12,
             matrix.m21, matrix.m22,
@@ -360,7 +382,8 @@ export class Drawer {
         return this
     }
 
-    overrideTransform(matrix: Matrix) {
+    /** Sets the canvas transform to the matrix */
+    public overrideTransform(matrix: Matrix) {
         this.ctx.setTransform(
             matrix.m11, matrix.m12,
             matrix.m21, matrix.m22,
@@ -369,49 +392,59 @@ export class Drawer {
         return this
     }
 
-    setLineDash(dash: number[] | null) {
+    /** Sets the line dash, see [ctx.setLineDash()](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/setLineDash) for more information */
+    public setLineDash(dash: number[] | null) {
         this.ctx.setLineDash(dash ?? [])
         return this
     }
 
-    setLineDashOffset(offset: number) {
+    /** Sets the line dash offset, see [ctx.lineDashOffset](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineDashOffset) for more information */
+    public setLineDashOffset(offset: number) {
         this.ctx.lineDashOffset = offset
         return this
     }
 
-    setLineCap(type: CanvasLineCap) {
+    /** Sets the line cap, see [ctx.lineCap](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) for more information */
+    public setLineCap(type: CanvasLineCap) {
         this.ctx.lineCap = type
         return this
     }
 
-    setLineJoin(type: CanvasLineJoin) {
+    /** Sets the line join, see [ctx.lineJoin](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineJoin) for more information */
+    public setLineJoin(type: CanvasLineJoin) {
         this.ctx.lineJoin = type
         return this
     }
 
-    setGlobalCompositeOperation(operation: GlobalCompositeOperation | null) {
+    /** Sets the global composite operation, see [ctx.globalCompositeOperation](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) for more information */
+    public setGlobalCompositeOperation(operation: GlobalCompositeOperation | null) {
         this.ctx.globalCompositeOperation = operation ?? "source-over"
         return this
     }
 
-    getImageData(source: Rect = this.size) {
+    /** Returns the image data of the canvas. If source rect is not provided, uses the whole canvas */
+    public getImageData(source: Rect = this.size) {
         return this.ctx.getImageData(source.x, source.y, source.width, source.height)
     }
 
-    makeEmptyImageData() {
+    /** Makes a new `ImageData` object with the size of the canvas */
+    public makeEmptyImageData() {
         return new ImageData(this.size.width, this.size.height)
     }
 
-    setImageSmoothing(value: boolean) {
+    /** Enables or disables image smoothing, see [ctx.imageSmoothingEnabled](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/imageSmoothingEnabled) for more information */
+    public setImageSmoothing(value: boolean) {
         this.ctx.imageSmoothingEnabled = value
         return this
     }
 
-    use<T extends (ctx: Drawer, ...args: any) => void>(thunk: T, ...args: Parameters<T> extends [any, ...infer U] ? U : never) {
+    /** Applies the function with `this` and the provided arguments  */
+    public use<T extends (ctx: Drawer, ...args: any) => void>(thunk: T, ...args: Parameters<T> extends [any, ...infer U] ? U : never) {
         thunk(this, ...args)
         return this
     }
 
+    /** Creates a `CanvasPattern` using the content of this canvas */
     public asPattern(repetition: "repeat" | "repeat-x" | "repeat-y" | "no-repeat" = "repeat") {
         return this.ctx.createPattern(this.ctx.canvas, repetition)!
     }
@@ -424,11 +457,17 @@ export namespace Drawer {
     export type ImageSource = CanvasImageSource | Drawer
 
     export interface TextOptions {
+        /** Font family to use, if not specified, attempts to read the CSS font style from the canvas element */
         font?: string
+        /** Font size to use, if not specified, attempts to read the CSS font style from the canvas element */
         size?: string | number
+        /** Horizontal text alignment, relative to the specified position */
         align?: CanvasTextAlign
+        /** Vertical text alignment, relative to the specified position */
         baseline?: CanvasTextBaseline
+        /** If `true`, the text is stroked, before being filled. If a function is provided, it will be called before the text is filled with computed text metrics. */
         outline?: boolean | ((options: TextOutlineOptions) => void)
+        /** Modifier to a apply to the text. */
         modifier?: "bold" | "italic" | "italic bold"
     }
 
@@ -443,6 +482,7 @@ export namespace Drawer {
 
     export type TestPatternType = "uv" | "missing-texture"
 
+    /** Creates a new `Drawer` containing a pattern. */
     export function makeTestPattern(type: TestPatternType, target: Drawer | Point, colorA: Color | null = null, colorB: Color | null = null): Drawer {
         if (target instanceof Point) target = new Drawer().setSize(target)
 
@@ -474,14 +514,21 @@ export namespace Drawer {
         return target
     }
 
+    /** Utility class that allows you to easily transform the canvas coordinate system using a virtual camera. */
     export class Camera {
+        /** The negative of the position of the camera @default Point.zero */
         public offset: Point
+        /** The scale/zoom of the camera @default 1 */
         public scale: number
+        /** If the view should be centered before being offset @default false */
         public shouldCenterView: boolean
 
+        /** Matrix to transform from world space to screen space */
         public worldToScreen = Matrix.identity
+        /** Matrix to transform from screen space to world space */
         public screenToWorld = Matrix.identity
 
+        /** Updates the transformation matrices based on the size of the provided object */
         public updateViewport(size: Rect): void
         public updateViewport(drawer: Drawer): void
         public updateViewport(size: Rect | Drawer): void
@@ -515,6 +562,7 @@ export namespace Drawer {
             drawer.overrideTransform(this.worldToScreen)
         }
 
+        /** Updates the offset of this camera */
         public translate(offset: Point) {
             this.offset = this.offset.add(offset)
         }
