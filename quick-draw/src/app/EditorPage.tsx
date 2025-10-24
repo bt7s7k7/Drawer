@@ -7,6 +7,43 @@ import { EditorState } from "../editor/useEditorState"
 import { Button } from "../vue3gui/Button"
 import { Display } from "./Display"
 
+const DEFAULT = `\
+// Executes once on start
+function init() {
+    
+}
+
+// Executes every frame
+function update(deltaTime) {
+
+}
+`
+
+const EXAMPLES = [
+    {
+        name: "Draw", value: `\
+let lastPosition = mouse
+
+function init() {
+	    
+}
+
+function update() {
+    if (pressed) {
+        drawer
+        	.setStyle(Color.black)
+        	.beginPath()
+        	.move(lastPosition)
+        	.lineTo(mouse)
+        	.stroke()
+    }
+    
+    lastPosition = mouse
+}
+`,
+    },
+] as {name: string, value: string}[]
+
 export const EditorPage = (defineComponent({
     name: "EditorPage",
     setup(props, ctx) {
@@ -38,9 +75,26 @@ export const EditorPage = (defineComponent({
             window.dispatchEvent(new CustomEvent("resize"))
         }
 
+        function handleExample(event: Event) {
+            const select = event.target as HTMLSelectElement
+            const value = select.value
+            select.value = ""
+
+            if (value) {
+                state.code.value = value
+            }
+        }
+
         return () => (
-            <EditorView codeRatio={[0.5, 0.25][size.value]} state={state} localStorageId="quick-draw:code" mode="javascript" root>
-                <Button clear icon={mdiDockLeft} onClick={nextSize} v-label:right="Collapse code"></Button>
+            <EditorView codeRatio={[0.5, 0.25][size.value]} state={state} localStorageId="quick-draw:code" mode="javascript" code={DEFAULT} root>
+                <Button clear icon={mdiDockLeft} onClick={nextSize} v-label:right="Collapse code" />
+                <Button clear label="Examples">
+                    <select class="absolute-fill opacity-0" onChange={handleExample} value="">
+                        {EXAMPLES.map(({ name, value }) => (
+                            <option value={value}>{name}</option>
+                        ))}
+                    </select>
+                </Button>
             </EditorView>
         )
     },
