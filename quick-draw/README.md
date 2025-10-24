@@ -1,4 +1,4 @@
-<h1 align=center>Quick Draw</h1>
+<h1 align=center>Mini Draw</h1>
 
 Dead simple abstraction over the 2D canvas API. Provides a fluent API for ease of expression and various objects for 2D vector math. Visit the [playground](https://bt7s7k7.github.io/Drawer/) to try it out.
 

@@ -42,7 +42,10 @@ project.script("build", async () => {
     delete project["dependencies"]
     await writeFile("./dist/package.json", JSON.stringify(project, null, 4))
 
-    for (const file of ["README.md"]) {
+    for (const file of [
+        "README.md",
+        "LICENSE",
+    ]) {
         await copy(file, "./dist/" + file)
     }
 
