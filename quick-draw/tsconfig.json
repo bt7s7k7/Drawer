@@ -17,7 +17,9 @@
         "types": [
             "vite/client"
         ],
-        "useDefineForClassFields": false
+        "useDefineForClassFields": false,
+        "noEmit": true,
+        "allowImportingTsExtensions": true
     },
     "include": [
         "src/**/*.ts",

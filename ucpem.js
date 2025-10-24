@@ -1,9 +1,11 @@
 /// <reference path="./.vscode/config.d.ts" />
 // @ts-check
 
-const { project, github, run, join, constants, copy } = require("ucpem")
+const { project, github, run, join, constants, copy, include } = require("ucpem")
 const { build } = require("esbuild")
 const { readFile, rename, rm } = require("fs/promises")
+
+include("./quick-draw/ucpem.js")
 
 const drawer = project.prefix("src").res("drawer")
 

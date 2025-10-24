@@ -1,0 +1,18 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        "node_modules",
+        "src/app",
+        "src/comTypes",
+        "src/editor",
+        "src/vue3gui",
+        "src/eventDecorator.ts",
+        "src/main.ts",
+    ],
+    "compilerOptions": {
+        "outDir": "./dist",
+        "emitDeclarationOnly": true,
+        "allowImportingTsExtensions": true,
+        "noEmit": false
+    }
+}

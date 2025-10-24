@@ -5,6 +5,7 @@ dist-ssr
 *.local
 tsconfig.tsbuildinfo
 yarn-error.log
+src/index.ts
 
 # UCPEM
 ucpem_ports
