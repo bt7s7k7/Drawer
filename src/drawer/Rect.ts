@@ -32,12 +32,12 @@ export class Rect {
     }
 
     /** Returns a new rect that allows for stroking rectangle with lines of an odd line width */
-    public makePixelPerfect(): Rect {
+    public makePixelPerfect() {
         return new Rect(Math.floor(this.x) + 0.5, Math.floor(this.y) + 0.5, Math.floor(this.width), Math.floor(this.height))
     }
 
     /** Returns a new rectangle where all components are floored. */
-    public floor(): Rect {
+    public floor() {
         return new Rect(Math.floor(this.x), Math.floor(this.y), Math.floor(this.width), Math.floor(this.height))
     }
 
@@ -49,6 +49,12 @@ export class Rect {
     public readonly x: number
     public readonly y: number
 
+    constructor()
+    constructor(x: number, y: number)
+    constructor(x: number, y: number, width: number, height: number)
+    constructor(position: { x: number, y: number })
+    constructor(position: { x: number, y: number }, size: { x: number, y: number })
+    constructor(rect: { x: number, y: number, width: number, height: number })
     constructor(x: number | { x: number, y: number } | { x: number, y: number, width: number, height: number } = 0, y: number | { x: number, y: number } = 0, public readonly width = 0, public readonly height = 0) {
         if (typeof x === "object") {
             this.x = x.x
@@ -101,6 +107,8 @@ export class Rect {
     }
 
     /** Returns a new rect translated by the offset */
+    public translate(offset: { x: number, y: number }): Rect
+    public translate(x: number, y: number): Rect
     public translate(offset: { x: number, y: number } | number, offsetY = 0) {
         if (typeof offset === "object") {
             return new Rect(this.x + offset.x, this.y + offset.y, this.width, this.height)
@@ -110,6 +118,8 @@ export class Rect {
     }
 
     /** Returns a new rect with its size changed by the offset */
+    public expand(offset: { x: number, y: number }): Rect
+    public expand(x: number, y: number): Rect
     public expand(offset: { x: number, y: number } | number, offsetY = 0) {
         if (typeof offset === "object") {
             return new Rect(this.x, this.y, this.width + offset.x, this.height + offset.y)
@@ -182,9 +192,9 @@ export class Rect {
     }
 
     /** Considering a line segment starting at `[0,0]` and extending by `vector`, get the end
-    public  * point of this segment, if the line segment is constrained in such a way, that it cannot cross
+     * point of this segment, if the line segment is constrained in such a way, that it cannot cross
      * the boundary of this rect. */
-    clampVector(vector: Point) {
+    public clampVector(vector: Point) {
         let x2 = this.width * 0.5
         let y2 = this.height * 0.5
 
@@ -228,16 +238,16 @@ export class Rect {
 
     /** Returns a point where its components are normalized relative to the position and size of this rect */
     public getFracPoint(point: Point): Point
-    getFracPoint(x: number, y: number): Point
-    getFracPoint(pointOrX: number | Point, y?: number) {
-        const point = new Point(pointOrX, y)
+    public getFracPoint(x: number, y: number): Point
+    public getFracPoint(pointOrX: number | Point, y?: number) {
+        const point = y != null ? new Point(pointOrX as number, y) : new Point(pointOrX as Point)
         return this.pos().add(this.size().scale(point))
     }
 
     /** Returns a new rect that is positioned inside this rect according to the specified
-    public  * constraints. The rect will be of the maximum possible size, while still satisfying all
+     * constraints. The rect will be of the maximum possible size, while still satisfying all
      * provided constraints.  */
-    align(options: RectAlignOptions) {
+    public align(options: RectAlignOptions) {
         let x = 0
         let width = 0
         let y = 0

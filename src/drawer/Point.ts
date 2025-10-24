@@ -42,14 +42,19 @@ export class Point {
     }
 
     /** Scales this vector by another vector, by element-wise multiplication */
+    public scale(other: { x: number, y: number }): Point
+    public scale(x: number, y: number): Point
     public scale(other: { x: number, y: number } | number, otherY = 0) {
-        if (typeof other === "object")
+        if (typeof other === "object") {
             return new Point(this.x * other.x, this.y * other.y)
-        else
+        } else {
             return new Point(this.x * other, this.y * otherY)
+        }
     }
 
     /** Inverse scales this vector by another vector, by element-wise division */
+    public antiScale(other: { x: number, y: number }): Point
+    public antiScale(x: number, y: number): Point
     public antiScale(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x / other.x, this.y / other.y)
@@ -63,6 +68,9 @@ export class Point {
     }
 
     readonly x: number
+    constructor()
+    constructor(x: number, y: number)
+    constructor(source: { x: number, y: number })
     constructor(x: number | { x: number, y: number } = 0, readonly y = 0) {
         if (typeof x === "object") {
             this.x = x.x
@@ -92,8 +100,8 @@ export class Point {
 
     /** Adds two vectors and returns a result */
     public add(other: { x: number, y: number }): Point
-    add(x: number, y: number): Point
-    add(other: { x: number, y: number } | number, otherY = 0) {
+    public add(x: number, y: number): Point
+    public add(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x + other.x, this.y + other.y)
         else
@@ -102,8 +110,8 @@ export class Point {
 
     /** Subtracts two vectors and returns a result */
     public sub(other: { x: number, y: number }): Point
-    sub(x: number, y: number): Point
-    sub(other: { x: number, y: number } | number, otherY = 0) {
+    public sub(x: number, y: number): Point
+    public sub(other: { x: number, y: number } | number, otherY = 0) {
         if (typeof other === "object")
             return new Point(this.x - other.x, this.y - other.y)
         else
