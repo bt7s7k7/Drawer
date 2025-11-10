@@ -32,6 +32,8 @@ export class DrawerInput extends EventListener {
     public time = -1
     /** Time elapsed since last frame */
     public deltaTime = 0
+    /** Time, in which if multiple draw events are received, only the first one will be executed and the others discarded. */
+    public minDeltaTime = 14
     public readonly onResize = new EventEmitter()
 
     public controlCamera(camera: Drawer.Camera, { listener = this as EventListener, zoom = true, translate = true, onUpdate = null as null | (() => void) } = {}) {
@@ -153,8 +155,11 @@ export class DrawerInput extends EventListener {
 
     public processDrawEvent(drawer: Drawer, deltaTime: number | null = null) {
         this.drawer = drawer
+        let firstFrame = false
+        const now = performance.now()
         if (this.time == -1 && deltaTime == null) {
-            this.time = Date.now()
+            this.time = now
+            firstFrame = true
         }
 
         let actualDeltaTime: number
@@ -163,8 +168,13 @@ export class DrawerInput extends EventListener {
             this.time += deltaTime
             actualDeltaTime = deltaTime
         } else {
-            actualDeltaTime = Date.now() - this.time
-            this.time = Date.now()
+            actualDeltaTime = now - this.time
+
+            if (!firstFrame && actualDeltaTime < this.minDeltaTime) {
+                return
+            }
+
+            this.time = now
         }
 
         this.mouse.delta = this.mouse.pos.add(this.mouse.lastPos.mul(-1))
