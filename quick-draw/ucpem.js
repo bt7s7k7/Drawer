@@ -10,6 +10,11 @@ project.prefix("src").use(
     github("bt7s7k7/Apsides").res("editor"),
 )
 
+project.prefix("src").res("threadServer",
+    github("bt7s7k7/CommonTypes").res("comTypes"),
+    github("bt7s7k7/Vue3GUI").res("vue3gui"),
+)
+
 project.script("build", async () => {
     const { build } = require("esbuild")
 
