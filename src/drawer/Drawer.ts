@@ -265,23 +265,31 @@ export class Drawer {
     }
 
     /** Sets a linear gradient as a style */
-    public setLinearGradient(start: Point, end: Point, stops: readonly (readonly [number, string])[]) {
-        let gradient = this.ctx.createLinearGradient(start.x, start.y, end.x, end.y)
-        stops.forEach(v => gradient.addColorStop(v[0], v[1]))
+    public setLinearGradient(start: Point, end: Point, stops: readonly (readonly [number, string | Color])[]) {
+        const gradient = this.ctx.createLinearGradient(start.x, start.y, end.x, end.y)
+
+        for (const [offset, color] of stops) {
+            gradient.addColorStop(offset, typeof color == "string" ? color : color.toStyle())
+        }
+
         this.setStyle(gradient)
         return this
     }
 
     /** Sets a radial gradient as a style */
-    public setRadialGradient(start: Point, startRadius: number, end: Point | null, endRadius: number | null, stops: readonly (readonly [number, string])[]) {
+    public setRadialGradient(start: Point, startRadius: number, end: Point | null, endRadius: number | null, stops: readonly (readonly [number, string | Color])[]) {
         if (end == null) end = start
         if (endRadius == null) {
             endRadius = startRadius
             startRadius = 0
         }
 
-        let gradient = this.ctx.createRadialGradient(start.x, start.y, startRadius, end.x, end.y, endRadius)
-        stops.forEach(v => gradient.addColorStop(v[0], v[1]))
+        const gradient = this.ctx.createRadialGradient(start.x, start.y, startRadius, end.x, end.y, endRadius)
+
+        for (const [offset, color] of stops) {
+            gradient.addColorStop(offset, typeof color == "string" ? color : color.toStyle())
+        }
+
         this.setStyle(gradient)
         return this
     }
