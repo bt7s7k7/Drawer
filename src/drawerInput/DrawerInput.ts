@@ -80,23 +80,25 @@ export class DrawerInput extends EventListener {
     public processMouseInput(drawer: Drawer, type: "up" | "down" | "move" | "leave" | "enter" | "context", event: MouseEvent, local = true) {
         this.drawer = drawer
 
-        if (type == "leave") {
-            this.mouse.over = false
-            return
-        }
-
-        if (type == "enter") {
-            this.mouse.over = true
-            void (document.activeElement as HTMLElement)?.blur?.()
-            return
-        }
-
         let pos
         if (local) {
             pos = new Point(event.offsetX, event.offsetY)
         } else {
             const boundingRect = drawer.ctx.canvas.getBoundingClientRect()
             pos = new Point(event.pageX - boundingRect.x, event.pageY - boundingRect.y)
+        }
+
+        if (type == "leave") {
+            this.mouse.over = false
+            this.mouse.onLeave.emit({ pos })
+            return
+        }
+
+        if (type == "enter") {
+            this.mouse.over = true
+            void (document.activeElement as HTMLElement)?.blur?.()
+            this.mouse.onEnter.emit({ pos })
+            return
         }
 
         const lastPos = this.mouse.pos
@@ -293,6 +295,10 @@ export namespace DrawerInput {
         public lastPos = new Point()
         /** Triggers when the mouse moves */
         public readonly onMove = new EventEmitter<{ pos: Point, delta: Point, lastPos: Point }>()
+        /** Triggers when the mouse enters the canvas */
+        public readonly onEnter = new EventEmitter<{ pos: Point }>()
+        /** Triggers when the mouse leaves the canvas */
+        public readonly onLeave = new EventEmitter<{ pos: Point }>()
         public wheelDelta = Point.zero
         public readonly onWheel = new EventEmitter<{ delta: Point }>()
     }
