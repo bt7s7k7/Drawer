@@ -115,7 +115,7 @@ export class Drawer {
             this.ctx.font = fontStyle
 
 
-            if (this.ctx.font !== fontStyle) {
+            if (!Drawer.disableFontVerification && this.ctx.font !== fontStyle) {
                 throw new Error(`Invalid font for drawer, size = ${size}, font = ${font} (ctx returned ${this.ctx.font})`)
             }
 
@@ -464,6 +464,7 @@ export class Drawer {
     }
 
     public static CONTEXT_FACTORY = () => document.createElement("canvas").getContext("2d")!
+    public static disableFontVerification = false
 }
 
 export namespace Drawer {
