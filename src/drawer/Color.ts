@@ -177,5 +177,10 @@ export class Color {
 
         return new Color(r, g, b)
     }
+
+    /** Creates and input for `Drawer.setLinearGradient` or `Drawer.setRadialGradient` with all specified colors being uniformly distributed */
+    public static distributeGradient(colors: (string | Color)[]) {
+        return colors.map((color, i, a) => [i / (a.length - 1), color] as const)
+    }
 }
 
