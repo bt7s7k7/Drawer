@@ -168,6 +168,16 @@ export class Point {
         return this.x * this.y
     }
 
+    /** Returns the magnitude of this vector in taxicab geometry. Can also be understood as the sum of the absolute value of the components of this vector. */
+    public l1() {
+        return Math.abs(this.x) + Math.abs(this.y)
+    }
+
+    /** Returns the manhattan distance between this and an another point. Can also be understood as the sum of the absolute value of the components of the difference. */
+    public manhattanDistance(other: { x: number, y: number }) {
+        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y)
+    }
+
     /** Check if this vector has identical components to the other */
     public equals(other: { x: number, y: number }) {
         return this.x == other.x && this.y == other.y
