@@ -392,6 +392,15 @@ export class Rect {
         return new Rect(minX, minY, maxX - minX, maxY - minY)
     }
 
+    public topLeft() { return this.pos() }
+    public top() { return new Point(this.x + this.width * 0.5, this.y) }
+    public topRight() { return new Point(this.x + this.width, this.y) }
+    public right() { return new Point(this.x + this.width, this.y + this.height * 0.5) }
+    public bottomRight() { return this.end() }
+    public bottom() { return new Point(this.x + this.width * 0.5, this.y + this.height) }
+    public bottomLeft() { return new Point(this.x, this.y + this.height) }
+    public left() { return new Point(this.x, this.y + this.height * 0.5) }
+
     /** Position: `[0, 0]`, Size: `[1, 1]` */
     public static one = new Rect(0, 0, 1, 1)
     /** Position: `[0, 0]`, Size: `[0, 0]` */
