@@ -71,6 +71,12 @@ export class Drawer {
 
     /** Clears the canvas. */
     public clear() {
+        if (this.fragile) {
+            const canvas = this.ctx.canvas
+            this.ctx.clearRect(0, 0, canvas.width, canvas.height)
+            return this
+        }
+
         this.setSize(this.size)
         return this
     }
