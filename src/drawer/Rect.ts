@@ -222,13 +222,47 @@ export class Rect {
     }
 
     /** Scales the size of this rect by a vector */
-    public scale(rect: Rect) {
-        return new Rect(this.x, this.y, this.width * rect.width, this.height * rect.height)
+    public scale(width: number, height: number): Rect
+    public scale(rect: { x: number, y: number }): Rect
+    public scale(rect: { width: number, height: number }): Rect
+    public scale(a: { x: number, y: number } | { width: number, height: number } | number, b?: number) {
+        let width: number
+        let height: number
+
+        if (typeof a == "number") {
+            width = a
+            height = b!
+        } else if ("x" in a) {
+            width = a.x
+            height = a.y
+        } else {
+            width = a.width
+            height = a.height
+        }
+
+        return new Rect(this.x, this.y, this.width * width, this.height * height)
     }
 
     /** Inverse scales the size of this rect by a vector by element-wise division */
-    public antiScale(rect: Rect) {
-        return new Rect(this.x, this.y, this.width / rect.width, this.height / rect.height)
+    public antiScale(width: number, height: number): Rect
+    public antiScale(rect: { x: number, y: number }): Rect
+    public antiScale(rect: { width: number, height: number }): Rect
+    public antiScale(a: { x: number, y: number } | { width: number, height: number } | number, b?: number) {
+        let width: number
+        let height: number
+
+        if (typeof a == "number") {
+            width = a
+            height = b!
+        } else if ("x" in a) {
+            width = a.x
+            height = a.y
+        } else {
+            width = a.width
+            height = a.height
+        }
+
+        return new Rect(this.x, this.y, this.width / width, this.height / height)
     }
 
     /** Returns a new rect where the size is ceiled */
