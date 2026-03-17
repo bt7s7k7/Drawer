@@ -335,7 +335,7 @@ export class Drawer {
     public blit(image: Drawer.ImageSource, dest: Point): Drawer
     public blit(image: ImageData, dest?: Point): Drawer
     public blit(image: Drawer.ImageSource, dest: Rect): Drawer
-    public blit(image: Drawer.ImageSource, dest: Rect, source: Rect): Drawer
+    public blit(image: Drawer.ImageSource, dest: Rect | Point, source: Rect): Drawer
     public blit(image: Drawer.ImageSource | ImageData, dest: Rect | Point | null = null, source: Rect | null = null) {
         if (image instanceof ImageData) {
             if (dest) {
@@ -350,12 +350,20 @@ export class Drawer {
 
         if (!dest) {
             this.ctx.drawImage(realImage, 0, 0)
-        } else if (dest instanceof Point) {
+        } else if (dest instanceof Point && !source) {
             this.ctx.drawImage(realImage, ...dest.spread())
         } else {
             if (!source) {
-                this.ctx.drawImage(realImage, ...dest.spread())
+                // Typescript problem
+                if (dest instanceof Point) {
+                    this.ctx.drawImage(realImage, ...dest.spread())
+                } else {
+                    this.ctx.drawImage(realImage, ...dest.spread())
+                }
             } else {
+                if (dest instanceof Point) {
+                    dest = this.size.translate(dest).expand(dest.mul(-1))
+                }
                 // @ts-ignore
                 this.ctx.drawImage(realImage, ...source.spread(), ...dest.spread())
             }
